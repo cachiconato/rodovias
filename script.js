@@ -46,6 +46,10 @@ function initialize() {
       secondLayer.setMap(null);
     }
   });
+
+  google.maps.event.addListener(layer, 'click', function (evt) {
+      console.log(evt);
+  });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
