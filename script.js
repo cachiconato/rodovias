@@ -1,29 +1,50 @@
 function initialize() {
-
-  var brazil = new google.maps.LatLng(-18.771115, -42.758789);
-
+  google.maps.visualRefresh = true;
   var map = new google.maps.Map(document.getElementById('map-canvas'), {
-    center: brazil,
+    center: new google.maps.LatLng(-14.989911309819053, -48.35657244067755),
     zoom: 5,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  var layer = new google.maps.FusionTablesLayer({
+  layer = new google.maps.FusionTablesLayer({
+    map: map,
+    heatmap: { enabled: false },
     query: {
-      select: 'col1',
-      from: '1lgEWgtJ9YE8ftmoxZf-eiD8t6a0mwFZOSynU5lU',
-      where: "col0 contains ignoring case 'BR-'"
+      select: "col2\x3e\x3e1",
+      from: "1I72VZY6R-nFEBN-UNhlI17HCB2D3OGfUQlunGvo",
+      where: ""
     },
-    styleId: 2,
-    templateId: 2,
-    ui_token: 'AIGcsfNKJ-n4J5_o5f5nZSUjB18uxsG1oQ',
-    heatmap: {enabled: false}
+    options: {
+      styleId: 2,
+      templateId: 2
+    }
   });
 
-  layer.setMap(map);
+  var secondLayer = new google.maps.FusionTablesLayer({
+    query: {
+      select: "col1\x3e\x3e1",
+      from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM",
+      where: ""
+    },
+    options: {
+      styleId: 2,
+      templateId: 2
+    },
+    heatmap: {enabled: false}
+  });
+  
+  secondLayer.setMap(null);
 
-  google.maps.event.addListener(layer, 'click', function () {
-      console.log('layer click');
+  google.maps.event.addListener(map, 'zoom_changed', function() {
+    var zoomLevel = map.getZoom();
+
+    if (zoomLevel > 5) {
+      layer.setMap(null);
+      secondLayer.setMap(map);
+    } else {
+      layer.setMap(map);
+      secondLayer.setMap(null);
+    }
   });
 }
 
