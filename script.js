@@ -10,7 +10,7 @@ function initialize() {
   function handleGeolocation(position) {
     var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     map.setCenter(center);
-    map.setZoom(8);
+    map.setZoom(7);
   }
 
   function handleNoGeolocation() {
