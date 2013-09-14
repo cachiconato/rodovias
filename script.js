@@ -64,7 +64,7 @@ function initialize() {
     html.push("<h3> Estatisticas</h3>");
     html.push("<table class='ftTable'>");
     //for (var field in ftMouseEvt.row) {
-      html.push("<tr><th>" + "<i class=\"icon-ambulance icon-2x\"></i>" + "</th><td>" + evt.row.total.value + "</td></tr>");
+      html.push("<tr><th>" + "Numero de acidentes" + "</th><td>" + evt.row.total.value + "</td></tr>");
     //}
     html.push("</table>");
     popup.setOptions({
