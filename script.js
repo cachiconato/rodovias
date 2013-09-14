@@ -1,15 +1,27 @@
 function initialize() {
   google.maps.visualRefresh = true;
 
-  var popup = new google.maps.InfoWindow();
-
   var map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: new google.maps.LatLng(-14.989911309819053, -48.35657244067755),
     zoom: 5,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  layer = new google.maps.FusionTablesLayer({
+  function handleGeolocation(position) {
+    var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    map.setCenter(center);
+    map.setZoom(8);
+  }
+
+  function handleNoGeolocation() {
+    console.log('no geolocation');
+  }
+
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(handleGeolocation, handleNoGeolocation);
+  }
+
+  var layer = new google.maps.FusionTablesLayer({
     map: map,
     heatmap: { enabled: false },
     query: {
@@ -25,6 +37,7 @@ function initialize() {
   });
 
   var secondLayer = new google.maps.FusionTablesLayer({
+    map: null,
     query: {
       select: "col1\x3e\x3e1",
       from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM",
@@ -36,8 +49,6 @@ function initialize() {
     },
     heatmap: {enabled: false}
   });
-  
-  secondLayer.setMap(null);
 
   google.maps.event.addListener(map, 'zoom_changed', function() {
     var zoomLevel = map.getZoom();
@@ -59,6 +70,7 @@ function initialize() {
       console.log(evt);
   });
 
+  var popup = new google.maps.InfoWindow();
   var openInfoWindow = function(evt) {
     var html = [];
     html.push("<h3> Estatisticas</h3>");
