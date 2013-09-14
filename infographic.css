@@ -1,0 +1,67 @@
+body {
+	font: normal 15px Helvetica;
+}
+
+h3 {
+	font-size: 2em;
+	font-weight: normal;
+	margin: 20px;
+	text-align: center;
+
+}
+
+svg {
+	height: 200px;
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 20px;
+}
+
+svg line {
+	display: none;
+}
+
+svg text {
+	font: normal 14px Helvetica;
+}
+
+
+
+/*table*/
+
+
+table { 
+	background: #fff; 
+	margin: 0 auto;
+	margin-top: 30px;
+	border-collapse: collapse;
+	font-size: 1em;
+}
+
+td, table th { 
+	border-bottom: 1px solid #e7e7e7;
+}
+
+tbody tr:nth-child(2n+1) { 
+	background: #f6f6f6;
+}
+
+th { 
+	color: #2b2b2b;
+	padding: 5px 30px;
+	color: #2b2b2b;
+	font-size: 2em;
+	font-weight: bolder; 
+}
+
+tbody tr:hover { 
+	background: #fffde1; 
+}
+
+td, th { 
+	position: relative;
+	padding: 20px 30px;
+	font-size: 1.4em;
+	line-height: 1.4em;
+	text-align: left;
+}
