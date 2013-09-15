@@ -1,22 +1,4 @@
-// nv.addGraph(function() {
-//     var chart = nv.models.multiBarChart();
-
-//     chart.xAxis
-//         .tickFormat(d3.format(',f'));
-
-//     chart.yAxis
-//         .tickFormat(d3.format(',f'));
-
-//     d3.select('#chart1 svg')
-//         .datum(exampleData())
-//       .transition().duration(10).call(chart);
-
-//     nv.utils.windowResize(chart.update);
-
-//     return chart;
-// });
- 
- nv.addGraph(function() {  
+nv.addGraph(function() {  
   var chart = nv.models.discreteBarChart()
     .x(function(d) { return d.x })
     .y(function(d) { return d.y })

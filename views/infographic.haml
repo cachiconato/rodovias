@@ -1,0 +1,43 @@
+%html
+%head
+	%meta{:charset => "utf-8"}
+	%title Infográfico dos Acidentes nas Rodovias Brasileiras
+	%link{:href=>'normalize.css', :rel => 'stylesheet', :type => "text/css"}
+	%link{:rel => "stylesheet", :type => "text/css", :href => "style.css"}
+	%link{:rel => "stylesheet", :type => "text/css", :href => "nv.d3.css"}
+	%link{:rel => "stylesheet", :type => "text/css", :href => "infographic.css"}
+	%script{:type => "text/javascript", :src => "scripts/d3.v2.min.js"}
+	%script{:type => "text/javascript", :src => "scripts/nv.d3.min.js"}
+	%script{:type => "text/javascript", :src => "scripts/infographic.js"}
+%body
+	%div#chart1
+		%h3 Numero de acidentes nas rodovias do brazil
+		%svg
+	%table
+		%thead
+			%tr
+				%th Estado
+				%th Acidentes
+				%th Razão
+				%th Mortes
+		%tbody
+			%tr
+				%td RS
+				%td 1000
+				%td Velocidade
+				%td 100
+			%tr
+				%td SC
+				%td 1000
+				%td Velocidade
+				%td 100
+			%tr
+				%td PR
+				%td 1000
+				%td Velocidade
+				%td 100
+			%tr
+				%td SP
+				%td 1000
+				%td Velocidade
+				%td 100
