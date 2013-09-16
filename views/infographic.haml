@@ -11,7 +11,7 @@
 	%script{:type => "text/javascript", :src => "scripts/infographic.js"}
 %body
 	%div#chart1
-		%h3 Numero de acidentes nas rodovias do brazil
+		%h3 Número de acidentes nas rodovias do brasil
 		%svg
 	%table
 		%thead
@@ -23,21 +23,25 @@
 		%tbody
 			%tr
 				%td RS
-				%td 1000
+				%td
+					%span.chart{ :style => "width: 100%;" } 1000
 				%td Velocidade
 				%td 100
 			%tr
 				%td SC
-				%td 1000
+				%td
+					%span.chart{ :style => "width: 30%;" } 300
 				%td Velocidade
 				%td 100
 			%tr
 				%td PR
-				%td 1000
+				%td
+					%span.chart{ :style => "width: 40%;" } 400
 				%td Velocidade
 				%td 100
 			%tr
 				%td SP
-				%td 1000
+				%td
+					%span.chart{ :style => "width: 70%;" } 700
 				%td Velocidade
 				%td 100
