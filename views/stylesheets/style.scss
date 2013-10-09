@@ -28,3 +28,12 @@ html, body {
   padding: 5px;
   border: 1px solid #999;
 }
+
+.popup {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: gray;
+  width: 100px;
+  padding: 15px;
+}

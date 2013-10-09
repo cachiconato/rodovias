@@ -1,7 +1,10 @@
+var map;
+var states = [];
+
 function initialize() {
   google.maps.visualRefresh = true;
 
-  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+  map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: new google.maps.LatLng(-14.989911309819053, -48.35657244067755),
     zoom: 5,
     mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -10,7 +13,6 @@ function initialize() {
   function handleGeolocation(position) {
     var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     map.setCenter(center);
-    map.setZoom(7);
   }
 
   function handleNoGeolocation() {
@@ -21,27 +23,25 @@ function initialize() {
     navigator.geolocation.getCurrentPosition(handleGeolocation, handleNoGeolocation);
   }
 
-  var layer = new google.maps.FusionTablesLayer({
-    map: map,
-    heatmap: { enabled: false },
-    query: {
-      select: "col2\x3e\x3e1",
-      from: "1I72VZY6R-nFEBN-UNhlI17HCB2D3OGfUQlunGvo",
-      where: ""
-    },
-    options: {
-      styleId: 2,
-      templateId: 2
-    },
-    suppressInfoWindows : true
-  });
+  //var layer = new google.maps.FusionTablesLayer({
+  //  map: null,
+  //  heatmap: { enabled: false },
+  //  query: {
+  //    select: "Location",
+  //    from: "189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM"
+  //  },
+  //  options: {
+  //    styleId: 2,
+  //    templateId: 2
+  //  },
+  //  suppressInfoWindows : true
+  //});
 
-  var secondLayer = new google.maps.FusionTablesLayer({
+  var roadsLayer = new google.maps.FusionTablesLayer({
     map: null,
     query: {
-      select: "col1\x3e\x3e1",
-      from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM",
-      where: ""
+      select: "geom",
+      from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM"
     },
     options: {
       styleId: 2,
@@ -54,14 +54,15 @@ function initialize() {
     var zoomLevel = map.getZoom();
 
     if (zoomLevel > 5) {
-      layer.setMap(null);
-      secondLayer.setMap(map);
+      hideStates();
+      roadsLayer.setMap(map);
     } else {
-      layer.setMap(map);
-      secondLayer.setMap(null);
+      showStates();
+      roadsLayer.setMap(null);
     }
   });
 
+  /** 
   google.maps.event.addListener(layer, "click", function(evt) {
     openInfoWindow(evt);
   });
@@ -86,6 +87,103 @@ function initialize() {
     });
     popup.open(map); 
   };
+  */
+
+  initRequest();
+}
+
+function initRequest() {
+  var script = document.createElement('script');
+  var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
+  url.push('sql=');
+  var query = 'SELECT Text, Location, total FROM ' +
+      '189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM';
+  var encodedQuery = encodeURIComponent(query);
+  url.push(encodedQuery);
+  url.push('&callback=drawMap');
+  url.push('&key=AIzaSyCmJqyDLGq5UEcn0hpFO4hVhb5q74gVyLw');
+  script.src = url.join('');
+  var body = document.getElementsByTagName('body')[0];
+  body.appendChild(script);
+};
+
+function drawMap(data) {
+  var rows = data['rows'];
+  for (var i in rows) {
+    var stateName = rows[i][0];
+    var geometries = rows[i][1]['geometries'];
+    var total = rows[i][2];
+
+    var newCoordinates = [];
+    if (geometries) {
+      for (var j in geometries) {
+        newCoordinates.push(constructNewCoordinates(geometries[j]));
+      }
+    } else {
+      newCoordinates = constructNewCoordinates(rows[i][1]['geometry']);
+    }
+
+    // TODO: fix this shit
+    var n= Math.floor(total/1000);
+    if(n>100) n= 100;
+    var R= Math.floor((255*n)/100);
+    var G= Math.floor((255*(100-n))/100);
+    var B= 0;
+    var rgb = 'rgb('+ R +','+ G +','+ B +')';
+
+    var state = new google.maps.Polygon({
+      paths: newCoordinates,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0,
+      strokeWeight: 1,
+      fillColor: rgb,
+      fillOpacity: 0.6
+    });
+
+    states.push({
+      name: stateName,
+      polygon: state
+    });
+
+    google.maps.event.addListener(state, 'mouseover', function() {
+      var _this = this;
+      var overMe = _.find(states, function(s){ 
+        return s.polygon === _this;
+      });
+      $('.popup').html('<h1>' + overMe.name + '</h1>').show();
+
+      this.setOptions({fillOpacity: 0.9});
+    });
+
+    google.maps.event.addListener(state, 'mouseout', function() {
+      this.setOptions({fillOpacity: 0.6});
+      $('.popup').hide();
+    });
+
+    state.setMap(map);
+  }
+}
+
+function constructNewCoordinates(polygon) {
+  var newCoordinates = [];
+  var coordinates = polygon['coordinates'][0];
+  for (var i in coordinates) {
+    newCoordinates.push(
+        new google.maps.LatLng(coordinates[i][1], coordinates[i][0]));
+  }
+  return newCoordinates;
+}
+
+function hideStates() {
+  _.each(states, function(s){
+    s.polygon.setMap(null);
+  });
+}
+
+function showStates() {
+  _.each(states, function(s){
+    s.polygon.setMap(map);
+  });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
