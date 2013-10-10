@@ -4,6 +4,10 @@ html, body {
   padding: 0;
 }
 
+main, section {
+  height: 100%;
+}
+
 #map-canvas, #map_canvas {
   height: 100%;
 }

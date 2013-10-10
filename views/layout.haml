@@ -1,4 +1,5 @@
-%html{html_attrs}
+!!! 5
+%html
   %head
     %meta{:charset => "utf-8"}
     %meta{:'http-equiv' => "X-UA-Compatible", :content => "IE=edge"}
@@ -9,7 +10,7 @@
     %link{:href=>'normalize.css', :rel => 'stylesheet', :type => "text/css"}
     %link{:href=>'/stylesheets/style.css', :rel => 'stylesheet', :type => "text/css"}
 
-    %script{:src => "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"}
+    %script{:type => "text/javascript", :src => "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"}
     %script{:type => "text/javascript", :src => "scripts/jquery-2.0.3.min.js"}
     %script{:type => "text/javascript", :src => "scripts/underscore-min.js"}
     %script{:type => "text/javascript", :src => "scripts/script.js"}
