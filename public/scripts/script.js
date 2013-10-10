@@ -54,10 +54,10 @@ function initialize() {
     var zoomLevel = map.getZoom();
 
     if (zoomLevel > 5) {
-      hideStates();
+      toggleStatesLayer(false);
       roadsLayer.setMap(map);
     } else {
-      showStates();
+      toggleStatesLayer(true);
       roadsLayer.setMap(null);
     }
   });
@@ -174,16 +174,11 @@ function constructNewCoordinates(polygon) {
   return newCoordinates;
 }
 
-function hideStates() {
+function toggleStatesLayer(on) {
   _.each(states, function(s){
-    s.polygon.setMap(null);
+    s.polygon.setMap(on ? map : null);
   });
-}
 
-function showStates() {
-  _.each(states, function(s){
-    s.polygon.setMap(map);
-  });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
