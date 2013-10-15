@@ -1,7 +1,8 @@
 var map;
 var states = [];
 var roadsLayer;
-var showRoads = false;
+var lastClickedState = null;
+var infoWindow = new google.maps.InfoWindow();
 
 var fusionTableWrapper = {
   call: function(tableId, fields, where, callbackName) {
@@ -9,7 +10,6 @@ var fusionTableWrapper = {
     var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
     url.push('sql=');
     var query = 'SELECT ' + fields.join(', ') + ' FROM ' + tableId;
-    console.log(where);
     if(where) {
       query += ' WHERE ' +  where;
     }
@@ -23,6 +23,34 @@ var fusionTableWrapper = {
   }
 };
 
+var mapUtil = {
+  newCoordinates: function(polygon) {
+    var newCoordinates = [];
+    var coordinates = polygon['coordinates'][0];
+    for (var i in coordinates) {
+      newCoordinates.push(
+          new google.maps.LatLng(coordinates[i][1], coordinates[i][0]));
+    }
+    return newCoordinates;
+  },
+  handleGeolocation: function (position) {
+    var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    map.setCenter(center);
+  },
+  handleNoGeolocation: function() {
+    console.log('no geolocation');
+  },
+  toggleStatesLayer: function(on) {
+    _.each(states, function(s){
+      s.polygon.setMap(on ? map : null);
+    });
+
+    if(infoWindow) {
+      infoWindow.close();
+    }
+  }
+};
+
 function initialize() {
   google.maps.visualRefresh = true;
 
@@ -32,21 +60,11 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  function handleGeolocation(position) {
-    var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    map.setCenter(center);
-  }
-
-  function handleNoGeolocation() {
-    console.log('no geolocation');
-  }
-
   if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(handleGeolocation, handleNoGeolocation);
+    navigator.geolocation.getCurrentPosition(mapUtil.handleGeolocation, mapUtil.handleNoGeolocation);
   }
 
   roadsLayer = new google.maps.FusionTablesLayer({
-    map: null,
     query: {
       select: "geom",
       from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM"
@@ -70,13 +88,13 @@ function drawMap(data) {
     var geometries = rows[i][1]['geometries'];
     var total = rows[i][2];
 
-    var newCoordinates = [];
+    var coordinates = [];
     if (geometries) {
       for (var j in geometries) {
-        newCoordinates.push(constructNewCoordinates(geometries[j]));
+        coordinates.push(mapUtil.newCoordinates(geometries[j]));
       }
     } else {
-      newCoordinates = constructNewCoordinates(rows[i][1]['geometry']);
+      coordinates = mapUtil.newCoordinates(rows[i][1]['geometry']);
     }
 
     // TODO: fix this shit
@@ -88,7 +106,7 @@ function drawMap(data) {
     var rgb = 'rgb('+ R +','+ G +','+ B +')';
 
     var state = new google.maps.Polygon({
-      paths: newCoordinates,
+      paths: coordinates,
       strokeColor: '#555555',
       strokeOpacity: 1,
       strokeWeight: 1,
@@ -103,57 +121,39 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'mouseover', function() {
-      //$('.popup').html('<h1>' + this.name + '</h1>').show();
       this.setOptions({fillOpacity: 0.9});
     });
 
     google.maps.event.addListener(state, 'mouseout', function() {
       this.setOptions({fillOpacity: 0.6});
-      //$('.popup').hide();
     });
-
-    function handleResponse(data) {
-      console.log(data);
-    }
 
     google.maps.event.addListener(state, 'click', function(e) {
       var tableId = '1VNAO2kw5Y6iryYPTlHihzM6_pvXsHGT8EIcocJY';
       var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
       var where = "local = '" + this.name + "'";
-      
-      //TODO check how to render response data on infoWindow
-      fusionTableWrapper.call(tableId, fields, where, 'handleResponse');
-      openInfoWindow(e, this.name);
+
+      lastClickedState = {name: this.name, clickEvent: e};
+      fusionTableWrapper.call(tableId, fields, where, 'openInfoWindow');
     });
 
     state.setMap(map);
   }
 }
 
+function openInfoWindow(fusionTableResponse) {
+  var html = [];
+  var evt = lastClickedState.clickEvent;
 
-function constructNewCoordinates(polygon) {
-  var newCoordinates = [];
-  var coordinates = polygon['coordinates'][0];
-  for (var i in coordinates) {
-    newCoordinates.push(
-        new google.maps.LatLng(coordinates[i][1], coordinates[i][0]));
-  }
-  return newCoordinates;
-}
-
-function toggleStatesLayer(on) {
-  _.each(states, function(s){
-    s.polygon.setMap(on ? map : null);
+  // ano, mes, causa, total
+  _.each(fusionTableResponse.rows, function(r){
+    console.log(r[0] + '-' + r[1] + ' => ' + r[2] + ': ' + r[3]);
   });
 
-  if(infoWindow)
-    infoWindow.close();
-}
+  var total = _.reduce(fusionTableResponse.rows, function(t, c){ return t + c[3];}, 0);
 
-var infoWindow = new google.maps.InfoWindow();
-function openInfoWindow(evt, stateName) {
-  var html = [];
-  html.push("<h3>"+ stateName + "</h3>");
+  html.push("<h3>"+ lastClickedState.name + "</h3>");
+  html.push("<p><strong>Total:</strong> " + total + "</p>");
   html.push("<table class='ftTable'>");
   html.push("</table>");
   infoWindow.setOptions({
@@ -164,6 +164,8 @@ function openInfoWindow(evt, stateName) {
   infoWindow.open(map); 
 };
 
+
+var showRoads = false;
 function changeViews() {
   var newVal = $('#showRoads').is(':checked');
   if(showRoads == newVal) return;
@@ -171,10 +173,10 @@ function changeViews() {
 
   if(showRoads) {
     roadsLayer.setMap(map);
-    toggleStatesLayer(false);
+    mapUtil.toggleStatesLayer(false);
   } else {
     roadsLayer.setMap(null);
-    toggleStatesLayer(true);
+    mapUtil.toggleStatesLayer(true);
   }
 }
 
