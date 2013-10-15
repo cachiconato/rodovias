@@ -1,6 +1,13 @@
 = haml(:header, :layout => false)
 %main 
-	%section
-		%div#map-canvas
-		%div.popup
+  %section
+    %div#view-toggle
+      %label.switch-light.switch-candy{onclick: ''}
+        %input#showRoads{type: 'checkbox', onchange: 'changeViews()'}
+        %span
+          %span Estados
+          %span Rodovias
+        %a
+    %div#map-canvas
+    %div.popup
 = haml(:footer, :layout => false)

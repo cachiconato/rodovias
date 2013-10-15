@@ -33,6 +33,18 @@ main, section {
   border: 1px solid #999;
 }
 
+#view-toggle {
+  position: absolute;
+  top: 30px;
+  right: 5px;
+  width: 400px;
+  z-index: 9999;
+}
+
+#view-toggle label {
+  cursor: pointer;
+}
+
 .popup {
   position: absolute;
   bottom: 0;

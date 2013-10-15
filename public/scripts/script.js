@@ -1,5 +1,7 @@
 var map;
 var states = [];
+var roadsLayer;
+var showRoads = false;
 
 function initialize() {
   google.maps.visualRefresh = true;
@@ -23,21 +25,7 @@ function initialize() {
     navigator.geolocation.getCurrentPosition(handleGeolocation, handleNoGeolocation);
   }
 
-  //var layer = new google.maps.FusionTablesLayer({
-  //  map: null,
-  //  heatmap: { enabled: false },
-  //  query: {
-  //    select: "Location",
-  //    from: "189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM"
-  //  },
-  //  options: {
-  //    styleId: 2,
-  //    templateId: 2
-  //  },
-  //  suppressInfoWindows : true
-  //});
-
-  var roadsLayer = new google.maps.FusionTablesLayer({
+  roadsLayer = new google.maps.FusionTablesLayer({
     map: null,
     query: {
       select: "geom",
@@ -53,13 +41,14 @@ function initialize() {
   google.maps.event.addListener(map, 'zoom_changed', function() {
     var zoomLevel = map.getZoom();
 
-    if (zoomLevel > 5) {
-      toggleStatesLayer(false);
-      roadsLayer.setMap(map);
-    } else {
-      toggleStatesLayer(true);
-      roadsLayer.setMap(null);
-    }
+    console.log('zoom_changed => ' + zoomLevel);
+    //if (zoomLevel > 5) {
+    //  toggleStatesLayer(false);
+    //  roadsLayer.setMap(map);
+    //} else {
+    //  toggleStatesLayer(true);
+    //  roadsLayer.setMap(null);
+    //}
   });
 
   /** 
@@ -178,7 +167,20 @@ function toggleStatesLayer(on) {
   _.each(states, function(s){
     s.polygon.setMap(on ? map : null);
   });
+}
 
+function changeViews() {
+  var newVal = $('#showRoads').is(':checked');
+  if(showRoads == newVal) return;
+  else { showRoads = newVal };
+
+  if(showRoads) {
+    roadsLayer.setMap(map);
+    toggleStatesLayer(false);
+  } else {
+    roadsLayer.setMap(null);
+    toggleStatesLayer(true);
+  }
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
