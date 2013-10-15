@@ -38,19 +38,6 @@ function initialize() {
     heatmap: {enabled: false}
   });
 
-  google.maps.event.addListener(map, 'zoom_changed', function() {
-    var zoomLevel = map.getZoom();
-
-    console.log('zoom_changed => ' + zoomLevel);
-    //if (zoomLevel > 5) {
-    //  toggleStatesLayer(false);
-    //  roadsLayer.setMap(map);
-    //} else {
-    //  toggleStatesLayer(true);
-    //  roadsLayer.setMap(null);
-    //}
-  });
-
   /** 
   google.maps.event.addListener(layer, "click", function(evt) {
     openInfoWindow(evt);
@@ -60,22 +47,6 @@ function initialize() {
       console.log(evt);
   });
 
-  var popup = new google.maps.InfoWindow();
-  var openInfoWindow = function(evt) {
-    var html = [];
-    html.push("<h3> Estatisticas</h3>");
-    html.push("<table class='ftTable'>");
-    //for (var field in ftMouseEvt.row) {
-      html.push("<tr><th>" + "Numero de acidentes" + "</th><td>" + evt.row.total.value + "</td></tr>");
-    //}
-    html.push("</table>");
-    popup.setOptions({
-      content : html.join(""),
-      position : evt.latLng,
-      pixelOffset : evt.pixelOffset
-    });
-    popup.open(map); 
-  };
   */
 
   initRequest();
@@ -122,11 +93,12 @@ function drawMap(data) {
 
     var state = new google.maps.Polygon({
       paths: newCoordinates,
-      strokeColor: '#FF0000',
-      strokeOpacity: 0,
+      strokeColor: '#555555',
+      strokeOpacity: 1,
       strokeWeight: 1,
       fillColor: rgb,
-      fillOpacity: 0.6
+      fillOpacity: 0.6,
+      name: stateName
     });
 
     states.push({
@@ -135,18 +107,17 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'mouseover', function() {
-      var _this = this;
-      var overMe = _.find(states, function(s){ 
-        return s.polygon === _this;
-      });
-      $('.popup').html('<h1>' + overMe.name + '</h1>').show();
-
+      //$('.popup').html('<h1>' + this.name + '</h1>').show();
       this.setOptions({fillOpacity: 0.9});
     });
 
     google.maps.event.addListener(state, 'mouseout', function() {
       this.setOptions({fillOpacity: 0.6});
-      $('.popup').hide();
+      //$('.popup').hide();
+    });
+
+    google.maps.event.addListener(state, 'click', function(e) {
+      openInfoWindow(e, this.name);
     });
 
     state.setMap(map);
@@ -167,7 +138,24 @@ function toggleStatesLayer(on) {
   _.each(states, function(s){
     s.polygon.setMap(on ? map : null);
   });
+
+  if(infoWindow)
+    infoWindow.close();
 }
+
+var infoWindow = new google.maps.InfoWindow();
+function openInfoWindow(evt, stateName) {
+  var html = [];
+  html.push("<h3>"+ stateName + "</h3>");
+  html.push("<table class='ftTable'>");
+  html.push("</table>");
+  infoWindow.setOptions({
+    content : html.join(""),
+    position : evt.latLng,
+    pixelOffset : evt.pixelOffset
+  });
+  infoWindow.open(map); 
+};
 
 function changeViews() {
   var newVal = $('#showRoads').is(':checked');
