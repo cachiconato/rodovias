@@ -3,6 +3,26 @@ var states = [];
 var roadsLayer;
 var showRoads = false;
 
+var fusionTableWrapper = {
+  call: function(tableId, fields, where, callbackName) {
+    var script = document.createElement('script');
+    var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
+    url.push('sql=');
+    var query = 'SELECT ' + fields.join(', ') + ' FROM ' + tableId;
+    console.log(where);
+    if(where) {
+      query += ' WHERE ' +  where;
+    }
+    var encodedQuery = encodeURIComponent(query);
+    url.push(encodedQuery);
+    url.push('&callback=' + callbackName);
+    url.push('&key=AIzaSyCmJqyDLGq5UEcn0hpFO4hVhb5q74gVyLw');
+    script.src = url.join('');
+    var body = document.getElementsByTagName('body')[0];
+    body.appendChild(script);
+  }
+};
+
 function initialize() {
   google.maps.visualRefresh = true;
 
@@ -38,34 +58,10 @@ function initialize() {
     heatmap: {enabled: false}
   });
 
-  /** 
-  google.maps.event.addListener(layer, "click", function(evt) {
-    openInfoWindow(evt);
-  });
-
-  google.maps.event.addListener(layer, 'click', function (evt) {
-      console.log(evt);
-  });
-
-  */
-
-  initRequest();
+  var tableId = '189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM';
+  var fields = ['Text', 'Location', 'total'];
+  fusionTableWrapper.call(tableId, fields, null, 'drawMap');
 }
-
-function initRequest() {
-  var script = document.createElement('script');
-  var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
-  url.push('sql=');
-  var query = 'SELECT Text, Location, total FROM ' +
-      '189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM';
-  var encodedQuery = encodeURIComponent(query);
-  url.push(encodedQuery);
-  url.push('&callback=drawMap');
-  url.push('&key=AIzaSyCmJqyDLGq5UEcn0hpFO4hVhb5q74gVyLw');
-  script.src = url.join('');
-  var body = document.getElementsByTagName('body')[0];
-  body.appendChild(script);
-};
 
 function drawMap(data) {
   var rows = data['rows'];
@@ -116,13 +112,24 @@ function drawMap(data) {
       //$('.popup').hide();
     });
 
+    function handleResponse(data) {
+      console.log(data);
+    }
+
     google.maps.event.addListener(state, 'click', function(e) {
+      var tableId = '1VNAO2kw5Y6iryYPTlHihzM6_pvXsHGT8EIcocJY';
+      var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
+      var where = "local = '" + this.name + "'";
+      
+      //TODO check how to render response data on infoWindow
+      fusionTableWrapper.call(tableId, fields, where, 'handleResponse');
       openInfoWindow(e, this.name);
     });
 
     state.setMap(map);
   }
 }
+
 
 function constructNewCoordinates(polygon) {
   var newCoordinates = [];
