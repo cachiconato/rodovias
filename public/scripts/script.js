@@ -86,7 +86,7 @@ function drawMap(data) {
   for (var i in rows) {
     var stateName = rows[i][0];
     var geometries = rows[i][1]['geometries'];
-    var total = rows[i][2];
+    var total = parseInt(rows[i][2]);
 
     var coordinates = [];
     if (geometries) {
@@ -97,11 +97,14 @@ function drawMap(data) {
       coordinates = mapUtil.newCoordinates(rows[i][1]['geometry']);
     }
 
-    // TODO: fix this shit
-    var n= Math.floor(total/1000);
-    if(n>100) n= 100;
-    var R= Math.floor((255*n)/100);
-    var G= Math.floor((255*(100-n))/100);
+    var oldRange = {min: 1246, max: 163111}; // min-max dos totais de acidente
+    var newRange = {min: 0, max: 255};
+    var oldRangeDiff = (oldRange.max - oldRange.min);
+    var newRangeDiff = (newRange.max - newRange.min);
+    var newValue = Math.floor((((total-oldRange.min)*newRangeDiff)/oldRangeDiff) + newRange.min);
+
+    var R=newValue;
+    var G=newRange.max-newValue;
     var B= 0;
     var rgb = 'rgb('+ R +','+ G +','+ B +')';
 
@@ -147,7 +150,7 @@ function openInfoWindow(fusionTableResponse) {
 
   // ano, mes, causa, total
   _.each(fusionTableResponse.rows, function(r){
-    console.log(r[0] + '-' + r[1] + ' => ' + r[2] + ': ' + r[3]);
+    //console.log(r[0] + '-' + r[1] + ' => ' + r[2] + ': ' + r[3]);
   });
 
   var total = _.reduce(fusionTableResponse.rows, function(t, c){ return t + c[3];}, 0);
