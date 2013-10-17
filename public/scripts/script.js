@@ -2,7 +2,28 @@ var map;
 var states = [];
 var roadsLayer;
 var lastClickedState = null;
-var infoWindow = new google.maps.InfoWindow();
+
+function initializeGraph(data) {
+  nv.addGraph(function() {
+    var chart = nv.models.stackedAreaChart()
+                  .x(function(d) { return d.x; })
+                  .y(function(d) { return d.y; })
+                  .tooltips(true)
+                  .clipEdge(true);
+
+    chart.xAxis.tickFormat(function(d) { return d3.time.format('%Y-%m')(new Date(d)) });
+    chart.yAxis.tickFormat(d3.format(',.2f'));
+
+    d3.select('#chart-overlay svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+}
 
 var fusionTableWrapper = {
   call: function(tableId, fields, where, callbackName) {
@@ -34,8 +55,10 @@ var mapUtil = {
     return newCoordinates;
   },
   handleGeolocation: function (position) {
-    var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    map.setCenter(center);
+    //TODO ignoring geolocation for now, check if needed
+    
+    //var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    //map.setCenter(center);
   },
   handleNoGeolocation: function() {
     console.log('no geolocation');
@@ -45,9 +68,14 @@ var mapUtil = {
       s.polygon.setMap(on ? map : null);
     });
 
-    if(infoWindow) {
-      infoWindow.close();
+    var chartOverlay = $('#chart-overlay');
+    if(on){
+      //chartOverlay.show();
+    } else {
+      $('#map-canvas').css('height', '100%');
+      chartOverlay.hide();
     }
+
   }
 };
 
@@ -128,6 +156,7 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'mouseout', function() {
+      if(lastClickedState && this.name == lastClickedState.name) return;
       this.setOptions({fillOpacity: 0.6});
     });
 
@@ -136,37 +165,69 @@ function drawMap(data) {
       var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
       var where = "local = '" + this.name + "'";
 
+      // highlight clicked state
+      _.each(states, function(s) { s.polygon.setOptions({fillOpacity: 0.6});});
+      this.setOptions({fillOpacity: 0.9});
+
       lastClickedState = {name: this.name, clickEvent: e};
-      fusionTableWrapper.call(tableId, fields, where, 'openInfoWindow');
+      fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
     });
 
     state.setMap(map);
   }
 }
 
-function openInfoWindow(fusionTableResponse) {
-  var html = [];
+function openGraphWindow(fusionTableResponse) {
   var evt = lastClickedState.clickEvent;
 
-  // ano, mes, causa, total
-  _.each(fusionTableResponse.rows, function(r){
-    //console.log(r[0] + '-' + r[1] + ' => ' + r[2] + ': ' + r[3]);
+  $('#chart-overlay').show();
+  $('#map-canvas').css('height', '60%');
+
+  // fusionTableResponse.rows => ano, mes, causa, total
+  var causas = _.uniq(_.map(fusionTableResponse.rows, function(r){ return r[2] || 'desconhecido'; }));
+  var causasData = _.map(causas, function(causa) {
+    var causaEntries = _.filter(fusionTableResponse.rows, function(r) {
+      return r[2] == causa;
+    });
+
+    var dataPoints = _.map(causaEntries, function(e){
+      var time = e[0] + e[1];
+      var totalAcidentes = e[3];
+      return [time, totalAcidentes];
+    });
+
+    var anos  = ['2007', '2008', '2009', '2010', '2011', '2012', '2013'];
+    var range = _.compact(_.flatten(
+      _.map(anos, function(ano){
+        return _.map(['1','2','3','4','5','6','7','8','9','10','11','12'], function(mes) {
+          //lixo
+          var mesInt = parseInt(mes);
+          if(ano == '2013' && mesInt > 6)
+            return null;
+
+          var dateTimeStr = ano + '-' + (mesInt < 10 ? '0'+mes : mes);
+          var dateTime = d3.time.format("%Y-%m").parse(dateTimeStr);
+
+          var val = _.find(causaEntries, function(c){
+            return c[0] == ano && c[1] == mes;
+          });
+          
+          var total = val ? parseInt(val[3]) : 0;
+
+          return { x: dateTime.getTime(), y: total };
+        });
+      })
+    ));
+
+    return {
+      key: causa, 
+      values: range
+    };
   });
 
   var total = _.reduce(fusionTableResponse.rows, function(t, c){ return t + c[3];}, 0);
-
-  html.push("<h3>"+ lastClickedState.name + "</h3>");
-  html.push("<p><strong>Total:</strong> " + total + "</p>");
-  html.push("<table class='ftTable'>");
-  html.push("</table>");
-  infoWindow.setOptions({
-    content : html.join(""),
-    position : evt.latLng,
-    pixelOffset : evt.pixelOffset
-  });
-  infoWindow.open(map); 
+  initializeGraph(causasData);
 };
-
 
 var showRoads = false;
 function changeViews() {

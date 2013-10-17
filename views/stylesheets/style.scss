@@ -44,3 +44,9 @@ main, section {
 #view-toggle label {
   cursor: pointer;
 }
+
+#chart-overlay  {
+  height: 40%; 
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+}
