@@ -60,6 +60,18 @@ var mapUtil = {
     //var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     //map.setCenter(center);
   },
+  getRGB: function(value) {
+    var oldRange = {min: 1246, max: 163111}; // min-max dos totais de acidente
+    var newRange = {min: 0, max: 255};
+    var oldRangeDiff = (oldRange.max - oldRange.min);
+    var newRangeDiff = (newRange.max - newRange.min);
+    var newValue = Math.floor((((value-oldRange.min)*newRangeDiff)/oldRangeDiff) + newRange.min);
+
+    var R=newValue;
+    var G=newRange.max-newValue;
+    var B= 0;
+    return 'rgb('+ R +','+ G +','+ B +')';
+  },
   handleNoGeolocation: function() {
     console.log('no geolocation');
   },
@@ -109,6 +121,8 @@ function initialize() {
   fusionTableWrapper.call(tableId, fields, null, 'drawMap');
 }
 
+
+
 function drawMap(data) {
   var rows = data['rows'];
   for (var i in rows) {
@@ -125,23 +139,12 @@ function drawMap(data) {
       coordinates = mapUtil.newCoordinates(rows[i][1]['geometry']);
     }
 
-    var oldRange = {min: 1246, max: 163111}; // min-max dos totais de acidente
-    var newRange = {min: 0, max: 255};
-    var oldRangeDiff = (oldRange.max - oldRange.min);
-    var newRangeDiff = (newRange.max - newRange.min);
-    var newValue = Math.floor((((total-oldRange.min)*newRangeDiff)/oldRangeDiff) + newRange.min);
-
-    var R=newValue;
-    var G=newRange.max-newValue;
-    var B= 0;
-    var rgb = 'rgb('+ R +','+ G +','+ B +')';
-
     var state = new google.maps.Polygon({
       paths: coordinates,
       strokeColor: '#555555',
       strokeOpacity: 1,
       strokeWeight: 1,
-      fillColor: rgb,
+      fillColor: mapUtil.getRGB(total),
       fillOpacity: 0.6,
       name: stateName
     });
