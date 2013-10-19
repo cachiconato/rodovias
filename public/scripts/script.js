@@ -12,10 +12,19 @@ function initializeGraph(data) {
     chart.xAxis.tickFormat(function(d) { return d3.time.format('%Y-%m')(new Date(d)) });
     chart.yAxis.tickFormat(d3.format(',.2f'));
 
+  $('#chart-overlay svg').empty();
+  d3.select('#chart-overlay svg')
+    .append("text")
+    .attr("x", 20)             
+    .attr("y", 20)
+    .attr("text-anchor", "middle")  
+    .text(mapUtil.selectedState);
+
     d3.select('#chart-overlay svg')
         .datum(data)
         .transition().duration(500)
         .call(chart);
+
 
     nv.utils.windowResize(chart.update);
 
