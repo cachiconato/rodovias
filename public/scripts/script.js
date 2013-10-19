@@ -6,8 +6,11 @@ function initializeGraph(data) {
     var chart = nv.models.stackedAreaChart()
                   .x(function(d) { return d.x; })
                   .y(function(d) { return d.y; })
+                  .controlsData(['Stacked', 'Expanded'])
+                  .controlLabels({stacked: 'Empilhado', stream: 'Stream', expanded: 'Expandido'})
                   .tooltips(true)
                   .clipEdge(true);
+
 
     chart.xAxis.tickFormat(function(d) { return d3.time.format('%Y-%m')(new Date(d)) });
     chart.yAxis.tickFormat(d3.format(',.2f'));
@@ -15,7 +18,7 @@ function initializeGraph(data) {
   $('#chart-overlay svg').empty();
   d3.select('#chart-overlay svg')
     .append("text")
-    .attr("x", 20)             
+    .attr("x", 20)
     .attr("y", 20)
     .attr("text-anchor", "middle")  
     .text(mapUtil.selectedState);
