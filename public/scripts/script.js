@@ -1,7 +1,5 @@
 var map;
 var states = [];
-var roadsLayer;
-var lastClickedState = null;
 
 function initializeGraph(data) {
   nv.addGraph(function() {
@@ -54,11 +52,11 @@ var mapUtil = {
     }
     return newCoordinates;
   },
-  handleGeolocation: function (position) {
-    //TODO ignoring geolocation for now, check if needed
-    
-    //var center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    //map.setCenter(center);
+  selectState: function(state) {
+      this.selectedState = state;
+  },
+  isSelected: function(state) {
+    return this.selectedState === state;  
   },
   getRGB: function(value) {
     var oldRange = {min: 1246, max: 163111}; // min-max dos totais de acidente
@@ -72,22 +70,19 @@ var mapUtil = {
     var B= 0;
     return 'rgb('+ R +','+ G +','+ B +')';
   },
-  handleNoGeolocation: function() {
-    console.log('no geolocation');
-  },
   toggleStatesLayer: function(on) {
     _.each(states, function(s){
       s.polygon.setMap(on ? map : null);
     });
 
-    var chartOverlay = $('#chart-overlay');
-    if(on){
-      //chartOverlay.show();
-    } else {
+    if(!on){
       $('#map-canvas').css('height', '100%');
-      chartOverlay.hide();
+      $('#chart-overlay').hide();
+      google.maps.event.trigger(map, 'resize');
     }
-
+  },
+  toggleRoadsLayer: function(on) {
+    this.roadsLayer.setMap(on ? map : null);
   }
 };
 
@@ -100,11 +95,7 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(mapUtil.handleGeolocation, mapUtil.handleNoGeolocation);
-  }
-
-  roadsLayer = new google.maps.FusionTablesLayer({
+  mapUtil.roadsLayer = new google.maps.FusionTablesLayer({
     query: {
       select: "geom",
       from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM"
@@ -159,7 +150,8 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'mouseout', function() {
-      if(lastClickedState && this.name == lastClickedState.name) return;
+      //if(selectedState && this.name == selectedState.name) return;
+      if(mapUtil.isSelected(this.name)) { return; }
       this.setOptions({fillOpacity: 0.6});
     });
 
@@ -172,7 +164,8 @@ function drawMap(data) {
       _.each(states, function(s) { s.polygon.setOptions({fillOpacity: 0.6});});
       this.setOptions({fillOpacity: 0.9});
 
-      lastClickedState = {name: this.name, clickEvent: e};
+      //selectedState = {name: this.name, clickEvent: e};
+      mapUtil.selectState(this.name);
       fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
     });
 
@@ -181,8 +174,6 @@ function drawMap(data) {
 }
 
 function openGraphWindow(fusionTableResponse) {
-  var evt = lastClickedState.clickEvent;
-
   $('#chart-overlay').show();
   $('#map-canvas').css('height', '60%');
 
@@ -238,13 +229,8 @@ function changeViews() {
   if(showRoads == newVal) return;
   else { showRoads = newVal };
 
-  if(showRoads) {
-    roadsLayer.setMap(map);
-    mapUtil.toggleStatesLayer(false);
-  } else {
-    roadsLayer.setMap(null);
-    mapUtil.toggleStatesLayer(true);
-  }
+  mapUtil.toggleRoadsLayer(showRoads);
+  mapUtil.toggleStatesLayer(!showRoads);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
