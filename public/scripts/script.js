@@ -101,9 +101,14 @@ var mapUtil = {
 function initialize() {
   google.maps.visualRefresh = true;
 
+  createSpinner('map-spinner');
+
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: new google.maps.LatLng(-14.989911309819053, -48.35657244067755),
     zoom: 5,
+    minZoom: 4,
+    maxZoom: 10,
+    mapTypeControl: false,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
@@ -183,6 +188,8 @@ function drawMap(data) {
 
     state.setMap(map);
   }
+
+  stopSpinning('map-spinner');
 }
 
 function openGraphWindow(fusionTableResponse) {
@@ -243,6 +250,36 @@ function changeViews() {
 
   mapUtil.toggleRoadsLayer(showRoads);
   mapUtil.toggleStatesLayer(!showRoads);
+}
+
+
+function createSpinner(containerId) {
+  var opts = {
+      lines: 13, // The number of lines to draw
+      length: 20, // The length of each line
+      width: 10, // The line thickness
+      radius: 30, // The radius of the inner circle
+      corners: 1, // Corner roundness (0..1)
+      rotate: 0, // The rotation offset
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      color: '#000', // #rgb or #rrggbb or array of colors
+      speed: 1, // Rounds per second
+      trail: 60, // Afterglow percentage
+      shadow: false, // Whether to render a shadow
+      hwaccel: false, // Whether to use hardware acceleration
+      className: 'spinner', // The CSS class to assign to the spinner
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      top: 'auto', // Top position relative to parent in px
+      left: 'auto' // Left position relative to parent in px
+  };
+  var target = document.getElementById(containerId);
+  $('#' + containerId).show();
+  return new Spinner(opts).spin(target);
+}
+
+function stopSpinning(containerId) {
+  $(containerId).stop();
+  $('#' + containerId).hide();
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
