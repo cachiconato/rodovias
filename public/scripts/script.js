@@ -73,7 +73,8 @@ var mapUtil = {
   getRGB: function(value) {
     var rainbow = new Rainbow(); 
     rainbow.setNumberRange(1246, 163111);
-    rainbow.setSpectrum('#FFFFB2', '#FECC5C', '#FD8D3C', '#E31A1C');
+    //rainbow.setSpectrum('#FFFFB2', '#FECC5C', '#FD8D3C', '#E31A1C'); //yellow
+    rainbow.setSpectrum('#FFFFCC', '#C2E699', '#78C679', '#238443'); //greens
     return '#' + rainbow.colourAt(value);
   },
   toggleStatesLayer: function(on) {
