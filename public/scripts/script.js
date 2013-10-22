@@ -173,7 +173,7 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'click', function(e) {
-      var tableId = '1VNAO2kw5Y6iryYPTlHihzM6_pvXsHGT8EIcocJY';
+      var tableId = '1za9lKRkUO7WKwUhdwcLpAa8CDZLqKgvtHM7YCk0';
       var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
       var where = "local = '" + this.name + "'";
 
