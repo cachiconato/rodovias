@@ -6,14 +6,17 @@ function initializeGraph(data) {
     var chart = nv.models.stackedAreaChart()
                   .x(function(d) { return d.x; })
                   .y(function(d) { return d.y; })
+                  .useInteractiveGuideline(true)
                   .controlsData(['Stacked', 'Expanded'])
                   .controlLabels({stacked: 'Empilhado', stream: 'Stream', expanded: 'Expandido'})
                   .tooltips(true)
                   .clipEdge(true);
 
 
-    chart.xAxis.tickFormat(function(d) { return d3.time.format('%Y-%m')(new Date(d)) });
+    chart.xAxis.tickFormat(function(d) { return d3.time.format('%m-%Y')(new Date(d)) });
+    chart.yAxis.axisLabel("Número de acidentes");
     chart.yAxis.tickFormat(d3.format(',.0f'));
+    chart.margin({left: 80});
 
   $('#chart-overlay svg').empty();
   d3.select('#chart-overlay svg')
