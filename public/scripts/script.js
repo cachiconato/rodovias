@@ -71,16 +71,14 @@ var mapUtil = {
     return this.selectedState === state;  
   },
   getRGB: function(value) {
-    var oldRange = {min: 1246, max: 163111}; // min-max dos totais de acidente
-    var newRange = {min: 0, max: 255};
-    var oldRangeDiff = (oldRange.max - oldRange.min);
-    var newRangeDiff = (newRange.max - newRange.min);
-    var newValue = Math.floor((((value-oldRange.min)*newRangeDiff)/oldRangeDiff) + newRange.min);
+    var rainbow = new Rainbow(); 
+    rainbow.setNumberRange(1246, 163111);
+    rainbow.setSpectrum('#f4cccc', '#a5ef63', '#50aa00', '#660000');
+    var s = '';
+    var hexColour = rainbow.colourAt(value);
+    s += '#' + hexColour;
 
-    var R=newValue;
-    var G=newRange.max-newValue;
-    var B= 0;
-    return 'rgb('+ R +','+ G +','+ B +')';
+    return s;
   },
   toggleStatesLayer: function(on) {
     _.each(states, function(s){
