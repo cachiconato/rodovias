@@ -73,12 +73,8 @@ var mapUtil = {
   getRGB: function(value) {
     var rainbow = new Rainbow(); 
     rainbow.setNumberRange(1246, 163111);
-    rainbow.setSpectrum('#f4cccc', '#a5ef63', '#50aa00', '#660000');
-    var s = '';
-    var hexColour = rainbow.colourAt(value);
-    s += '#' + hexColour;
-
-    return s;
+    rainbow.setSpectrum('#FFFFB2', '#FECC5C', '#FD8D3C', '#E31A1C');
+    return '#' + rainbow.colourAt(value);
   },
   toggleStatesLayer: function(on) {
     _.each(states, function(s){
@@ -148,7 +144,7 @@ function drawMap(data) {
     var state = new google.maps.Polygon({
       paths: coordinates,
       strokeColor: '#555555',
-      strokeOpacity: 1,
+      strokeOpacity: 0.6,
       strokeWeight: 1,
       fillColor: mapUtil.getRGB(total),
       fillOpacity: 0.6,
@@ -161,13 +157,12 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'mouseover', function() {
-      this.setOptions({fillOpacity: 0.9});
+      this.setOptions({strokeWeight: 2.5});
     });
 
     google.maps.event.addListener(state, 'mouseout', function() {
-      //if(selectedState && this.name == selectedState.name) return;
       if(mapUtil.isSelected(this.name)) { return; }
-      this.setOptions({fillOpacity: 0.6});
+      this.setOptions({strokeWeight: 1});
     });
 
     google.maps.event.addListener(state, 'click', function(e) {
@@ -176,8 +171,8 @@ function drawMap(data) {
       var where = "local = '" + this.name + "'";
 
       // highlight clicked state
-      _.each(states, function(s) { s.polygon.setOptions({fillOpacity: 0.6});});
-      this.setOptions({fillOpacity: 0.9});
+      _.each(states, function(s) { s.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});});
+      this.setOptions({strokeWeight: 2.5, strokeColor: '#000000'});
 
       //selectedState = {name: this.name, clickEvent: e};
       mapUtil.selectState(this.name);
