@@ -13,7 +13,7 @@ function initializeGraph(data) {
 
 
     chart.xAxis.tickFormat(function(d) { return d3.time.format('%Y-%m')(new Date(d)) });
-    chart.yAxis.tickFormat(d3.format(',.2f'));
+    chart.yAxis.tickFormat(d3.format(',.0f'));
 
   $('#chart-overlay svg').empty();
   d3.select('#chart-overlay svg')
