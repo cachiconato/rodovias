@@ -212,8 +212,8 @@ function openGraphWindow(fusionTableResponse) {
           if(ano == '2013' && mesInt > 6)
             return null;
 
-          var dateTimeStr = ano + '-' + (mesInt < 10 ? '0'+mes : mes);
-          var dateTime = d3.time.format("%Y-%m").parse(dateTimeStr);
+          var dateTimeStr = (mesInt < 10 ? '0'+mes : mes) + '-' + ano;
+          var dateTime = d3.time.format("%m-%Y").parse(dateTimeStr);
 
           var val = _.find(causaEntries, function(c){
             return c[0] == ano && c[1] == mes;
