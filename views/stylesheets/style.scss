@@ -39,6 +39,10 @@ main, section {
   height: 100%;
 }
 
+section {
+  border-top: 4px solid #3498db;
+}
+
 #map-canvas, #map_canvas {
   height: 100%;
 }
@@ -66,7 +70,7 @@ main, section {
 
 #view-toggle {
   position: absolute;
-  top: 5px;
+  top: 10px;
   right: 30px;
   width: 300px;
   z-index: 9999;
@@ -135,7 +139,7 @@ svg text, .gm-style span {
 }
 #slider-container {
   position: absolute;
-  top: 40px;
+  top: 45px;
   right: 30px;
   width: 200px;
 }
