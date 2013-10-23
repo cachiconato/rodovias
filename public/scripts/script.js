@@ -24,7 +24,7 @@ function initializeGraph(data) {
     .attr("x", 20)
     .attr("y", 20)
     .attr("text-anchor", "middle")  
-    .text(mapUtil.selectedState);
+    .text(mapUtil.selectedState.name);
 
     d3.select('#chart-overlay svg')
         .datum(data)
@@ -70,13 +70,12 @@ var mapUtil = {
   selectState: function(state) {
       this.selectedState = state;
   },
-  isSelected: function(state) {
-    return this.selectedState === state;  
+  isSelected: function(stateName) {
+    return this.selectedState.name === stateName;
   },
   getRGB: function(value) {
     var rainbow = new Rainbow(); 
-    rainbow.setNumberRange(1246, 163111);
-    //rainbow.setSpectrum('#FFFFB2', '#FECC5C', '#FD8D3C', '#E31A1C'); //yellow
+    rainbow.setNumberRange(1246, 163111);  //rainbow.setSpectrum('#FFFFB2', '#FECC5C', '#FD8D3C', '#E31A1C'); //yellow
     rainbow.setSpectrum('#FFFFCC', '#C2E699', '#78C679', '#238443'); //greens
     return '#' + rainbow.colourAt(value);
   },
@@ -174,14 +173,11 @@ function drawMap(data) {
       var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
       var where = "local = '" + this.name + "'";
 
-      showPopUp(e);
-
       // highlight clicked state
       _.each(states, function(s) { s.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});});
       this.setOptions({strokeWeight: 2.5, strokeColor: '#000000'});
 
-      //selectedState = {name: this.name, clickEvent: e};
-      mapUtil.selectState(this.name);
+      mapUtil.selectState({name: this.name, clickEvent: e});
       fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
     });
 
@@ -237,7 +233,7 @@ function openGraphWindow(fusionTableResponse) {
     };
   });
 
-  var total = _.reduce(fusionTableResponse.rows, function(t, c){ return t + c[3];}, 0);
+  showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
   initializeGraph(causasData);
 };
 
@@ -282,8 +278,10 @@ function stopSpinning(containerId) {
 }
 
 var infoWindow = new google.maps.InfoWindow();
-function showPopUp(clickEvent) {
-  var html = '<h1>titulo</h1>';
+function showPopUp(clickEvent, data) {
+  var total = _.reduce(data, function(t, c){ return t + c[3];}, 0);
+
+  var html = '<h3>total: ' + total + '</h3>';
   infoWindow.setOptions({
     content:  html,
     position : clickEvent.latLng,
