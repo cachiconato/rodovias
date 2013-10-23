@@ -174,6 +174,8 @@ function drawMap(data) {
       var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
       var where = "local = '" + this.name + "'";
 
+      showPopUp(e);
+
       // highlight clicked state
       _.each(states, function(s) { s.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});});
       this.setOptions({strokeWeight: 2.5, strokeColor: '#000000'});
@@ -277,6 +279,17 @@ function createSpinner(containerId) {
 function stopSpinning(containerId) {
   $(containerId).stop();
   $('#' + containerId).hide();
+}
+
+var infoWindow = new google.maps.InfoWindow();
+function showPopUp(clickEvent) {
+  var html = '<h1>titulo</h1>';
+  infoWindow.setOptions({
+    content:  html,
+    position : clickEvent.latLng,
+    pixelOffset : clickEvent.pixelOffset
+  });
+  infoWindow.open(map);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
