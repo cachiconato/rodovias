@@ -45,8 +45,9 @@ table {
 	background: rgb(1, 116, 1);
 	color: white;
 	display: block;
-	text-align: center;
-	font-size: 0.7em;
+	text-align: left;
+	font-size: 0.8em;
+	padding: 0 5px;
 }
 
 tbody tr:nth-child(2n+1) { 
