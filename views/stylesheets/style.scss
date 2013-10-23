@@ -153,6 +153,11 @@ footer {
   position: absolute;
   bottom: 0;
   width: 100%;
+  padding-top: 20px;
+
+  a, a:visited {
+    color: #FFBF00;
+  }
 }
 
 #logo {
