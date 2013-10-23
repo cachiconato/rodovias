@@ -148,8 +148,11 @@ footer {
   color: white;
   background: #3498db;
   text-align: center;
-  height: 30px;
+  height: 40px;
   padding: 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 #logo {
