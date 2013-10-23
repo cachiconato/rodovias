@@ -97,10 +97,16 @@ var mapUtil = {
   }
 };
 
+function dateRangeChanged(e, data) {
+  //TODO update views with new date range data
+  console.log("slider values changed min: " + data.values.min + " max: " + data.values.max);
+}
+
 function initialize() {
   google.maps.visualRefresh = true;
 
   createSpinner('map-spinner');
+  $('#slider').on('valuesChanged', dateRangeChanged);
 
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: new google.maps.LatLng(-14.989911309819053, -48.35657244067755),
