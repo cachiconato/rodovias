@@ -311,7 +311,7 @@ function showPopUp(clickEvent) {
       zIndex: null,
       boxStyle: {
         width: "300px",
-        opacity: 0.82
+        opacity: 0.85
       },
       closeBoxMargin: "10px 2px 2px 2px",
       closeBoxURL: "images/close.png",
