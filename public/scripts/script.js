@@ -1,5 +1,6 @@
 var map;
 var states = [];
+var ib = new InfoBox();
 
 function initializeGraph(data) {
   nv.addGraph(function() {
@@ -277,17 +278,51 @@ function stopSpinning(containerId) {
   $('#' + containerId).hide();
 }
 
-var infoWindow = new google.maps.InfoWindow();
-function showPopUp(clickEvent, data) {
-  var total = _.reduce(data, function(t, c){ return t + c[3];}, 0);
+function showPopUp(clickEvent) {
+   var marker = new google.maps.Marker({
+     map: map,
+     draggable: true,
+     position: clickEvent.latLng,
+     visible: false
+    });
+                
+    var boxText = document.createElement("div");
+    boxText.style.cssText = "border: 1px solid #2980b9; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
+    boxText.innerHTML =
+      '<span class="column" >' +
+      '  <img class="icon" src="images/caraccident.png" />' +
+      '  <span class="number">200</span>' +
+      '  <img class="icon" src="images/dead.png" />' +
+      '  <span class="number">200</span><br>' +
+      '</span>' +
+      '<span class="column" >' +
+      '  <h2>Causas</h2>' +
+      '  <span class="causa">200 Bebida</span>' +
+      '  <span class="causa">30 Velocidade</span>' +
+      '  <span class="causa">10 Animal na Pista</span>' +
+      '  <span class="causa">100 Stuff</span>' +
+      '<span>';
+            
+    var myOptions = {
+      content: boxText,
+      disableAutoPan: false,
+      maxWidth: 0,
+      pixelOffset : clickEvent.pixelOffset,
+      zIndex: null,
+      boxStyle: {
+        width: "300px"
+      },
+      closeBoxMargin: "10px 2px 2px 2px",
+      closeBoxURL: "images/close.png",
+      infoBoxClearance: new google.maps.Size(1, 1),
+      isHidden: false,
+      pane: "floatPane",
+      enableEventPropagation: false
+    };
 
-  var html = '<h3>total: ' + total + '</h3>';
-  infoWindow.setOptions({
-    content:  html,
-    position : clickEvent.latLng,
-    pixelOffset : clickEvent.pixelOffset
-  });
-  infoWindow.open(map);
+    ib.close();
+    ib.setOptions(myOptions);
+    ib.open(map, marker);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
