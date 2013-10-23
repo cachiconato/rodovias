@@ -72,7 +72,7 @@ var mapUtil = {
       this.selectedState = state;
   },
   isSelected: function(stateName) {
-    return this.selectedState.name === stateName;
+    return this.selectedState && this.selectedState.name === stateName;
   },
   getRGB: function(value) {
     var rainbow = new Rainbow(); 
