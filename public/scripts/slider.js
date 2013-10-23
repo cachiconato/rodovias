@@ -14,6 +14,7 @@ $(function(){
       var year  = val.getFullYear();
       return month + '-' + year;
     },
+    arrows: false,
     step: {
       months: 1
     }
