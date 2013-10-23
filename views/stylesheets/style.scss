@@ -37,7 +37,7 @@ main, section {
 #view-toggle {
   position: absolute;
   top: 5px;
-  right: 5px;
+  right: 30px;
   width: 400px;
   z-index: 9999;
 }
@@ -61,8 +61,6 @@ main, section {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 9999;
 }
-
-
 .infoBox {
   .column {
     vertical-align: top;
@@ -97,4 +95,10 @@ main, section {
     width: 40px;
     padding: 0;
   }
+}
+#slider-container {
+  position: absolute;
+  top: 40px;
+  right: 30px;
+  width: 500px;
 }
