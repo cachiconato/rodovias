@@ -287,7 +287,7 @@ function showPopUp(clickEvent) {
     });
                 
     var boxText = document.createElement("div");
-    boxText.style.cssText = "border: 1px solid #2980b9; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
+    boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
     boxText.innerHTML =
       '<span class="column" >' +
       '  <img class="icon" src="images/caraccident.png" />' +
@@ -310,7 +310,8 @@ function showPopUp(clickEvent) {
       pixelOffset : clickEvent.pixelOffset,
       zIndex: null,
       boxStyle: {
-        width: "300px"
+        width: "300px",
+        opacity: 0.82
       },
       closeBoxMargin: "10px 2px 2px 2px",
       closeBoxURL: "images/close.png",
