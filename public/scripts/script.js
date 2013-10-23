@@ -88,6 +88,7 @@ var mapUtil = {
     if(!on){
       $('#map-canvas').css('height', '100%');
       $('#chart-overlay').hide();
+      ib.close();
       google.maps.event.trigger(map, 'resize');
     }
   },
