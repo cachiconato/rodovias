@@ -277,12 +277,19 @@ function parseData(fusionTableResponse, range) {
 
 function openGraphWindow(fusionTableResponse) {
   $('#chart-overlay').show();
-  $('#map-canvas').css('height', '60%');
+  //$('#map-canvas').css('height', '60%');
 
   fusionTableWrapper.lastResponse = fusionTableResponse;
 
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
   initializeGraph(parseData(fusionTableResponse, slider.range()));
+
+  window.google.maps.event.addListener(ib, "domready", function () {
+    $('#grafico').magnificPopup({
+      type:'inline',
+      midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+    });
+  });
 };
 
 var showRoads = false;
@@ -368,7 +375,7 @@ function showPopUp(clickEvent, rows) {
     html.push('  </span>');
   });
   html.push('</span>');
-  html.push('<a href="">Veja mais informações</a>');
+  html.push('<a href="#chart-overlay" id="grafico">Veja mais informações</a>');
   boxText.innerHTML = html.join('');
           
   var myOptions = {
