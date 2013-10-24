@@ -135,6 +135,20 @@ function initialize() {
     minZoom: 4,
     maxZoom: 10,
     mapTypeControl: false,
+    panControl: true,
+    panControlOptions: {
+        position: google.maps.ControlPosition.LEFT_CENTER
+    },
+    zoomControl: true,
+    zoomControlOptions: {
+        style:google.maps.ZoomControlStyle.SMALL,
+        position: google.maps.ControlPosition.LEFT_CENTER
+    },
+    scaleControl: false,
+    streetViewControl: true,
+    streetViewControlOptions: {
+        position: google.maps.ControlPosition.LEFT_CENTER
+    },
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
