@@ -325,7 +325,7 @@ function showPopUp(clickEvent, rows) {
   };
 
   var boxText = document.createElement("div");
-  boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
+  boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; margin-bottom: 60px; background: #3498db; color:white; padding: 5px;";
 
   var html = [];
   html.push('<span class="column column-left" >');
