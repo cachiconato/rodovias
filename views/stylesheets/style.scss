@@ -158,10 +158,10 @@ svg text, .gm-style span {
   }
 
   h2 {
-    font-family: "OpenSansLight";
-    border-bottom: 1px solid #247DB9;
+    font-family: "OpenSans";
+    color: #1C5D88;
     margin: 0;
-    font-size: 20px;
+    font-size: 30px;
   }
 
   span.causa {
@@ -175,10 +175,13 @@ svg text, .gm-style span {
   }
 
   span.number {
-    margin-left: 4px;
     font-size: 37px;
-    vertical-align: top;
     color: #FFBF00;
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+    margin-bottom: 6px;
+    display: block;
   }
 
   img {
@@ -187,10 +190,9 @@ svg text, .gm-style span {
   }
 
   .icon {
-    top: 10px;
-    position: relative;
     width: 32px;
     padding: 0;
+    display: block;
   }
 }
 #slider-container {
