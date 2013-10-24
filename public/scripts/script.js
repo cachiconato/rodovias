@@ -333,7 +333,8 @@ function showPopUp(clickEvent) {
       '  <span class="causa"><span class="percentage">20%</span> Velocidade</span>' +
       '  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>' +
       '  <span class="causa"><span class="percentage">5%</span> Stuff</span>' +
-      '<span>';
+      '</span>' +
+      '<a href="">Veja mais informações</a>';
             
     var myOptions = {
       content: boxText,

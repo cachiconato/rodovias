@@ -106,6 +106,12 @@ svg text, .gm-style span {
     display: inline-block;
   }
 
+  a, a:visited {
+    color: white;
+    font-size: 15px;
+    margin-left: 10px;
+  }
+
   h2 {
     font-family: "OpenSansLight";
     border-bottom: 1px solid #247DB9;
