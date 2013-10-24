@@ -310,7 +310,7 @@ function stopSpinning(containerId) {
   $('#' + containerId).hide();
 }
 
-function showPopUp(clickEvent) {
+function showPopUp(clickEvent, rows) {
   var marker = new google.maps.Marker({
     map: map,
     draggable: true,
@@ -318,25 +318,33 @@ function showPopUp(clickEvent) {
     visible: false
   });
 
-  var stateName = mapUtil.selectedState.name;
+  var total = _.reduce(rows, function(t, row){ return t + row[3]; }, 0);
+
+  var popupData = {
+    name: mapUtil.selectedState.name,
+    accidents: total,
+    deaths: 666
+  };
 
   var boxText = document.createElement("div");
   boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
-  boxText.innerHTML =
-    '<span class="column" >' +
-    '  <h2>' + stateName + '</h2>' +
-    '  <img class="icon" src="images/caraccident.png" />' +
-    '  <span class="number">200</span>' +
-    '  <img class="icon" src="images/dead.png" />' +
-    '  <span class="number">200</span><br>' +
-    '</span>' +
-    '<span class="column" >' +
-    '  <span class="causa"><span class="percentage">30%</span> Bebida</span>' +
-    '  <span class="causa"><span class="percentage">20%</span> Velocidade</span>' +
-    '  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>' +
-    '  <span class="causa"><span class="percentage">5%</span> Stuff</span>' +
-    '</span>' +
-    '<a href="">Veja mais informações</a>';
+
+  var html = [];
+  html.push('<span class="column" >');
+  html.push('  <h2>' + popupData.name + '</h2>');
+  html.push('  <img class="icon" src="images/caraccident.png" />');
+  html.push('  <span class="number">' + popupData.accidents + '</span>');
+  html.push('  <img class="icon" src="images/dead.png" />');
+  html.push('  <span class="number">' + popupData.deaths + '</span><br>');
+  html.push('</span>');
+  html.push('<span class="column" >');
+  html.push('  <span class="causa"><span class="percentage">30%</span> Bebida</span>');
+  html.push('  <span class="causa"><span class="percentage">20%</span> Velocidade</span>');
+  html.push('  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>');
+  html.push('  <span class="causa"><span class="percentage">5%</span> Stuff</span>');
+  html.push('</span>');
+  html.push('<a href="">Veja mais informações</a>');
+  boxText.innerHTML = html.join('');
           
   var myOptions = {
     content: boxText,
