@@ -349,7 +349,9 @@ function showPopUp(clickEvent, rows) {
   html.push('</span>');
   html.push('<span class="column" >');
   _.each(top5, function(t){
-    html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause + '</span>');
+    html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause);
+    html.push('  <span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
+    html.push('  </span>');
   });
   html.push('</span>');
   html.push('<a href="">Veja mais informações</a>');

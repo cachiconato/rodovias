@@ -141,6 +141,19 @@ svg text, .gm-style span {
   }
 }
 
+.progress-bar {
+  display: block;
+  height: 20px;
+  background: #333;
+  width: 100%;
+}
+
+.progress-color {
+  background: green;
+  height: 20px;
+  display: block;
+}
+
 .infoBox {
   font-family: "OpenSans", "proxima-nova", sans-serif;
 
