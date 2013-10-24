@@ -114,8 +114,11 @@ var mapUtil = {
 };
 
 function dateRangeChanged(e, data) {
-  //TODO update views with new date range data
-  console.log("slider values changed min: " + data.values.min + " max: " + data.values.max);
+  var rsp = fusionTableWrapper.lastResponse;
+  if(rsp) {
+    var data = parseData(rsp, slider.range());
+    initializeGraph(data);
+  }
 }
 
 function initialize() {
@@ -261,6 +264,9 @@ function parseData(fusionTableResponse, range) {
 function openGraphWindow(fusionTableResponse) {
   $('#chart-overlay').show();
   $('#map-canvas').css('height', '60%');
+
+  fusionTableWrapper.lastResponse = fusionTableResponse;
+
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
   initializeGraph(parseData(fusionTableResponse, slider.range()));
 };
@@ -274,7 +280,6 @@ function changeViews() {
   mapUtil.toggleRoadsLayer(showRoads);
   mapUtil.toggleStatesLayer(!showRoads);
 }
-
 
 function createSpinner(containerId) {
   var opts = {
