@@ -305,10 +305,10 @@ function showPopUp(clickEvent) {
       '</span>' +
       '<span class="column" >' +
       '  <h2>Causas</h2>' +
-      '  <span class="causa">200 Bebida</span>' +
-      '  <span class="causa">30 Velocidade</span>' +
-      '  <span class="causa">10 Animal na Pista</span>' +
-      '  <span class="causa">100 Stuff</span>' +
+      '  <span class="causa"><span class="percentage">30%</span> Bebida</span>' +
+      '  <span class="causa"><span class="percentage">20%</span> Velocidade</span>' +
+      '  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>' +
+      '  <span class="causa"><span class="percentage">5%</span> Stuff</span>' +
       '<span>';
             
     var myOptions = {
