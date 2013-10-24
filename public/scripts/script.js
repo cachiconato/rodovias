@@ -54,6 +54,7 @@ var fusionTableWrapper = {
     if(where) {
       query += ' WHERE ' +  where;
     }
+
     var encodedQuery = encodeURIComponent(query);
     url.push(encodedQuery);
     url.push('&callback=' + callbackName);
@@ -68,6 +69,7 @@ var mapUtil = {
   newCoordinates: function(polygon) {
     var newCoordinates = [];
     var coordinates = polygon['coordinates'][0];
+
     for (var i in coordinates) {
       newCoordinates.push(
           new google.maps.LatLng(coordinates[i][1], coordinates[i][0]));
@@ -153,7 +155,7 @@ function initialize() {
   mapUtil.roadsLayer = new google.maps.FusionTablesLayer({
     query: {
       select: "geom",
-      from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM"
+      from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM",
     },
     options: {
       styleId: 2,
@@ -164,7 +166,41 @@ function initialize() {
 
   var tableId = '189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM';
   var fields = ['Text', 'Location', 'total'];
-  fusionTableWrapper.call(tableId, fields, null, 'drawMap');
+
+  // FIX IE duença
+  var estados = [
+    'AC',
+    'AL',
+    'AM',
+    'AP',
+    'BA',
+    'CE',
+    'DF',
+    'ES',
+    'GO',
+    'MA',
+    'MG',
+    'MS',
+    'MT',
+    'PA',
+    'PB',
+    'PE',
+    'PI',
+    'PR',
+    'RJ',
+    'RN',
+    'RO',
+    'RR',
+    'RS',
+    'SC',
+    'SE',
+    'SP',
+    'TO'
+  ]
+
+  for (var i = 0; i < estados.length; i++) {
+    fusionTableWrapper.call(tableId, fields, "Text = '" + estados[i] + "'", 'drawMap');
+  }
 }
 
 
