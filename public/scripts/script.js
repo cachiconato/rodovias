@@ -320,10 +320,20 @@ function showPopUp(clickEvent, rows) {
 
   var total = _.reduce(rows, function(t, row){ return t + row[3]; }, 0);
 
+  var causes = _.uniq(_.map(rows, function(r){ return r[2] || 'desconhecido'; }));
+  var causesTotals = _.map(causes, function(cause) {
+    var causeData = _.filter(rows, function(r){ return r[2] == cause; });
+    var causeTotal = _.reduce(causeData, function(t, v){ return t + v[3]; }, 0);
+    var percentage = ((causeTotal/total) * 100).toFixed(2);
+    return {cause: cause, percentage: percentage};
+  });
+
+  var top5  = _.sortBy(causesTotals, function(c){ return -c.percentage; }).slice(0, 5);
+
   var popupData = {
     name: mapUtil.selectedState.name,
     accidents: total,
-    deaths: 666
+    deaths: 666 //TODO unknown
   };
 
   var boxText = document.createElement("div");
@@ -338,10 +348,9 @@ function showPopUp(clickEvent, rows) {
   html.push('  <span class="number">' + popupData.deaths + '</span><br>');
   html.push('</span>');
   html.push('<span class="column" >');
-  html.push('  <span class="causa"><span class="percentage">30%</span> Bebida</span>');
-  html.push('  <span class="causa"><span class="percentage">20%</span> Velocidade</span>');
-  html.push('  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>');
-  html.push('  <span class="causa"><span class="percentage">5%</span> Stuff</span>');
+  _.each(top5, function(t){
+    html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause + '</span>');
+  });
   html.push('</span>');
   html.push('<a href="">Veja mais informações</a>');
   boxText.innerHTML = html.join('');
