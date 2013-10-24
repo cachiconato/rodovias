@@ -254,6 +254,7 @@ function drawMap(data) {
       this.setOptions({strokeWeight: 2.5, strokeColor: '#000000'});
 
       mapUtil.selectState({name: this.name, clickEvent: e});
+      ib.close(); // fix IE bug ;)
       fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
     });
 
