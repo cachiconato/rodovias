@@ -282,12 +282,15 @@ function openGraphWindow(fusionTableResponse) {
   fusionTableWrapper.lastResponse = fusionTableResponse;
 
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
-  initializeGraph(parseData(fusionTableResponse, slider.range()));
 
   window.google.maps.event.addListener(ib, "domready", function () {
     $('#grafico').magnificPopup({
       type:'inline',
-      midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+      callbacks: {
+        open: function(){
+          initializeGraph(parseData(fusionTableResponse, slider.range()));
+        }
+      }
     });
   });
 };
