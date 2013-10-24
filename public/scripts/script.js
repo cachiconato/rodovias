@@ -79,8 +79,10 @@ var mapUtil = {
     return this.selectedState && this.selectedState.name === stateName;
   },
   clearSelectedState: function() {
+    if(!this.selectedState) return; //none currently selected
+
     var _self = this;
-    var state = _.find(states, function(s) { console.log(s); return s.name === _self.selectedState.name; });
+    var state = _.find(states, function(s) { return s.name === _self.selectedState.name; });
     state.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});
     this.selectedState = null;
   },
@@ -294,6 +296,7 @@ function changeViews() {
   if(showRoads == newVal) return;
   else { showRoads = newVal };
 
+  mapUtil.clearSelectedState();
   mapUtil.toggleRoadsLayer(showRoads);
   mapUtil.toggleStatesLayer(!showRoads);
 }
