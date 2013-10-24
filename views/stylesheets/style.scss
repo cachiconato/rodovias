@@ -173,9 +173,13 @@ footer {
   font-size: 1.8em;
   position: absolute;
   background: transparent;
-  left: 98px;
-  top: 24px;
+  left: 92px;
+  top: 23px;
   color: #3498db;
   z-index: 99;
   text-shadow: 0px 3px 0px #fff;
+
+  img {
+    width: 160px;
+  }
 }
