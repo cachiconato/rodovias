@@ -2,6 +2,22 @@ var map;
 var states = [];
 var ib = new InfoBox();
 
+var slider = {
+  range: function() {
+    var dv = $('#slider').dateRangeSlider("values");
+    var min = {
+      year: dv.min.getFullYear(),
+      month: dv.min.getMonth()+1
+    };
+    var max = {
+      year: dv.max.getFullYear(),
+      month: dv.max.getMonth()+1
+    };
+
+    return {min: min, max: max};
+  }
+};
+
 function initializeGraph(data) {
   nv.addGraph(function() {
     var chart = nv.models.stackedAreaChart()
@@ -106,6 +122,8 @@ function initialize() {
   google.maps.visualRefresh = true;
 
   createSpinner('map-spinner');
+  
+  // slider change binding 
   $('#slider').on('valuesChanged', dateRangeChanged);
 
   map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -195,10 +213,7 @@ function drawMap(data) {
   stopSpinning('map-spinner');
 }
 
-function openGraphWindow(fusionTableResponse) {
-  $('#chart-overlay').show();
-  $('#map-canvas').css('height', '60%');
-
+function parseData(fusionTableResponse, range) {
   // fusionTableResponse.rows => ano, mes, causa, total
   var causas = _.uniq(_.map(fusionTableResponse.rows, function(r){ return r[2] || 'desconhecido'; }));
   var causasData = _.map(causas, function(causa) {
@@ -212,37 +227,42 @@ function openGraphWindow(fusionTableResponse) {
       return [time, totalAcidentes];
     });
 
-    var anos  = ['2007', '2008', '2009', '2010', '2011', '2012', '2013'];
-    var range = _.compact(_.flatten(
-      _.map(anos, function(ano){
-        return _.map(['1','2','3','4','5','6','7','8','9','10','11','12'], function(mes) {
-          //lixo
-          var mesInt = parseInt(mes);
-          if(ano == '2013' && mesInt > 6)
-            return null;
+    var rangeData = [];
+    // for each month within the range
+    for(var year=range.min.year; year <= range.max.year; year++) {
+      for(var month=range.min.month; month <= 12; month++) {
+        if(year === range.max.year && month > range.max.month) break;
 
-          var dateTimeStr = (mesInt < 10 ? '0'+mes : mes) + '-' + ano;
-          var dateTime = d3.time.format("%m-%Y").parse(dateTimeStr);
+        var dateTimeStr = (month<10 ? '0' + month : month) + '-' + year;
+        var dateTime = d3.time.format("%m-%Y").parse(dateTimeStr);
 
-          var val = _.find(causaEntries, function(c){
-            return c[0] == ano && c[1] == mes;
-          });
-          
-          var total = val ? parseInt(val[3]) : 0;
-
-          return { x: dateTime.getTime(), y: total };
+        var val = _.find(causaEntries, function(c){
+          return c[0] == year.toString() && c[1] == month.toString();
         });
-      })
-    ));
+        
+        var total = val ? parseInt(val[3]) : 0;
+
+        rangeData.push({ 
+          x: dateTime.getTime(), 
+          y: total 
+        });
+      }
+    }
 
     return {
       key: causa, 
-      values: range
+      values: rangeData
     };
   });
 
+  return causasData;
+}
+
+function openGraphWindow(fusionTableResponse) {
+  $('#chart-overlay').show();
+  $('#map-canvas').css('height', '60%');
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
-  initializeGraph(causasData);
+  initializeGraph(parseData(fusionTableResponse, slider.range()));
 };
 
 var showRoads = false;
