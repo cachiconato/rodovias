@@ -2,11 +2,6 @@
 
 var map;
 var states = [];
-var ib = new InfoBox();
-
-google.maps.event.addListener(ib, 'closeclick', function() {
-  mapUtil.clearSelectedState();
-});
 
 function initializeGraph(data) {
   nv.addGraph(function() {
@@ -103,8 +98,8 @@ var mapUtil = {
 
     if(!on){
       $('#map-canvas').css('height', '100%');
-      //$('#chart-overlay').hide();
-      ib.close();
+      $('#chart-overlay').hide();
+      $('#info-popup').hide();
       google.maps.event.trigger(map, 'resize');
     }
   },
@@ -254,7 +249,6 @@ function drawMap(data) {
       this.setOptions({strokeWeight: 2.5, strokeColor: '#000000'});
 
       mapUtil.selectState({name: this.name, clickEvent: e});
-      ib.close(); // fix IE bug ;)
       fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
     });
 
@@ -312,21 +306,18 @@ function parseData(fusionTableResponse, range) {
 function openGraphWindow(fusionTableResponse) {
   fusionTableWrapper.lastResponse = fusionTableResponse;
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
-
-  window.google.maps.event.addListenerOnce(ib, "domready", function () {
-    $('#grafico').magnificPopup({
-      type:'inline',
-      callbacks: {
-        open: function(){
-          slider.init();
-          initializeGraph(parseData(fusionTableResponse, slider.getRange()));
-        },
-        close: function() {
-          //destroyGraph??????
-          slider.destroy();
-        }
+  
+  $('#grafico').magnificPopup({
+    type:'inline',
+    callbacks: {
+      open: function(){
+        slider.init();
+        initializeGraph(parseData(fusionTableResponse, slider.range()));
+      },
+      close: function() {
+        slider.destroy();
       }
-    });
+    }
   });
 };
 
@@ -342,13 +333,6 @@ function changeViews() {
 }
 
 function showPopUp(clickEvent, rows) {
-  var marker = new google.maps.Marker({
-    map: map,
-    draggable: true,
-    position: clickEvent.latLng,
-    visible: false
-  });
-
   var total = _.reduce(rows, function(t, row){ return t + row[3]; }, 0);
 
   var causes = _.uniq(_.map(rows, function(r){ return r[2] || 'desconhecido'; }));
@@ -367,48 +351,21 @@ function showPopUp(clickEvent, rows) {
     deaths: 666 //TODO unknown
   };
 
-  var boxText = document.createElement("div");
-  boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; margin-bottom: 60px; background: #3498db; color:white; padding: 5px;";
-
   var html = [];
-  html.push('<span class="column column-left" >');
   html.push('  <h2>' + popupData.name + '</h2>');
   html.push('  <img class="icon" src="images/caraccident.png" />');
   html.push('  <span class="number">' + popupData.accidents + '</span>');
   html.push('  <img class="icon" src="images/dead.png" />');
   html.push('  <span class="number">' + popupData.deaths + '</span><br>');
-  html.push('</span>');
-  html.push('<span class="column column-right" >');
   _.each(top5, function(t){
     html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause);
     html.push('  <span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
-    html.push('  </span>');
   });
   html.push('</span>');
   html.push('<a href="#chart-overlay" id="grafico">Veja mais informações</a>');
 
-  boxText.innerHTML = html.join('');
-
-  var myOptions = {
-    content: boxText,
-    disableAutoPan: false,
-    maxWidth: 0,
-    pixelOffset : clickEvent.pixelOffset,
-    zIndex: null,
-    boxStyle: {
-      opacity: 0.92
-    },
-    closeBoxMargin: "10px 2px 2px 2px",
-    closeBoxURL: "images/close.png",
-    infoBoxClearance: new google.maps.Size(1, 1),
-    isHidden: false,
-    pane: "floatPane",
-    enableEventPropagation: false
-  };
-
-  //ib.close();
-  ib.setOptions(myOptions);
-  ib.open(map, marker);
+  $('#info-popup').html(html);
+  $('#info-popup').css("display", "block");
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
