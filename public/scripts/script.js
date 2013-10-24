@@ -1,3 +1,5 @@
+"use strict";
+
 var map;
 var states = [];
 var ib = new InfoBox();
@@ -99,7 +101,7 @@ var mapUtil = {
 
     if(!on){
       $('#map-canvas').css('height', '100%');
-      $('#chart-overlay').hide();
+      //$('#chart-overlay').hide();
       ib.close();
       google.maps.event.trigger(map, 'resize');
     }
@@ -274,15 +276,16 @@ function openGraphWindow(fusionTableResponse) {
   fusionTableWrapper.lastResponse = fusionTableResponse;
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
 
-  window.google.maps.event.addListener(ib, "domready", function () {
+  window.google.maps.event.addListenerOnce(ib, "domready", function () {
     $('#grafico').magnificPopup({
       type:'inline',
       callbacks: {
         open: function(){
           slider.init();
-          initializeGraph(parseData(fusionTableResponse, slider.range()));
+          initializeGraph(parseData(fusionTableResponse, slider.getRange()));
         },
         close: function() {
+          //destroyGraph??????
           slider.destroy();
         }
       }
@@ -346,8 +349,9 @@ function showPopUp(clickEvent, rows) {
   });
   html.push('</span>');
   html.push('<a href="#chart-overlay" id="grafico">Veja mais informações</a>');
+
   boxText.innerHTML = html.join('');
-          
+
   var myOptions = {
     content: boxText,
     disableAutoPan: false,
