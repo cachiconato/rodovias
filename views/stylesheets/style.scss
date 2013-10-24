@@ -97,6 +97,7 @@ svg text, .gm-style span {
 }
 
 #map-legend {
+  text-align: right;
   display: block;
   position: absolute;
   height: 10px;
@@ -108,8 +109,12 @@ svg text, .gm-style span {
     font-size: 12px;
     font-family: "OpenSansBold";
     display: block;
+    color: #777;
+  }
+
+  .numbers {
+    display: block;
     color: #555;
-    text-align: right;
   }
 
   .color {
@@ -132,11 +137,9 @@ svg text, .gm-style span {
     width: 25px;
     height: 25px;
     display: inline-block;
-    margin-left: 7px;
+    margin-left: 15px;
   }
 }
-
-
 
 .infoBox {
   font-family: "OpenSans", "proxima-nova", sans-serif;
