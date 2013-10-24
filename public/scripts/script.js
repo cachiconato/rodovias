@@ -364,7 +364,7 @@ function showPopUp(clickEvent, rows) {
     pixelOffset : clickEvent.pixelOffset,
     zIndex: null,
     boxStyle: {
-      width: "300px",
+      width: "400px",
       opacity: 0.85
     },
     closeBoxMargin: "10px 2px 2px 2px",
