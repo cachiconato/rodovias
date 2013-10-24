@@ -284,9 +284,9 @@ function changeViews() {
 function createSpinner(containerId) {
   var opts = {
       lines: 13, // The number of lines to draw
-      length: 13, // The length of each line
-      width: 6, // The line thickness
-      radius: 18, // The radius of the inner circle
+      length: 8, // The length of each line
+      width: 4, // The line thickness
+      radius: 13, // The radius of the inner circle
       corners: 1, // Corner roundness (0..1)
       rotate: 0, // The rotation offset
       direction: 1, // 1: clockwise, -1: counterclockwise
@@ -329,7 +329,6 @@ function showPopUp(clickEvent) {
       '  <span class="number">200</span><br>' +
       '</span>' +
       '<span class="column" >' +
-      '  <h2>Causas</h2>' +
       '  <span class="causa"><span class="percentage">30%</span> Bebida</span>' +
       '  <span class="causa"><span class="percentage">20%</span> Velocidade</span>' +
       '  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>' +
