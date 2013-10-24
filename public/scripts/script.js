@@ -98,7 +98,7 @@ var mapUtil = {
 
     if(!on){
       $('#map-canvas').css('height', '100%');
-      $('#chart-overlay').hide();
+      //$('#chart-overlay').hide();
       $('#info-popup').hide();
       google.maps.event.trigger(map, 'resize');
     }
@@ -309,7 +309,7 @@ function openGraphWindow(fusionTableResponse) {
     callbacks: {
       open: function(){
         slider.init();
-        initializeGraph(parseData(fusionTableResponse, slider.range()));
+        initializeGraph(parseData(fusionTableResponse, slider.getRange()));
       },
       close: function() {
         slider.destroy();
