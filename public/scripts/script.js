@@ -352,7 +352,7 @@ function showPopUp(clickEvent, rows) {
     pixelOffset : clickEvent.pixelOffset,
     zIndex: null,
     boxStyle: {
-      opacity: 0.85
+      opacity: 0.92
     },
     closeBoxMargin: "10px 2px 2px 2px",
     closeBoxURL: "images/close.png",

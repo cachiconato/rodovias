@@ -137,14 +137,16 @@ svg text, .gm-style span {
 
 .progress-bar {
   display: block;
-  height: 20px;
-  background: #333;
+  height: 10px;
+  background: #76B6E0;
   width: 100%;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 .progress-color {
-  background: green;
-  height: 20px;
+  background: #063453;
+  height: 10px;
   display: block;
 }
 
@@ -185,13 +187,14 @@ svg text, .gm-style span {
   }
 
   span.percentage {
-    color: #FFBF00;
+    color: #FAE12C;
     font-size: 18px;
+    float: right;
   }
 
   span.number {
     font-size: 37px;
-    color: #FFBF00;
+    color: #FAE12C;
     margin: 0;
     padding: 0;
     line-height: 1em;
