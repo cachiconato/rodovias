@@ -140,10 +140,7 @@ function initialize() {
         position: google.maps.ControlPosition.LEFT_CENTER
     },
     scaleControl: false,
-    streetViewControl: true,
-    streetViewControlOptions: {
-        position: google.maps.ControlPosition.LEFT_CENTER
-    },
+    streetViewControl: false,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
