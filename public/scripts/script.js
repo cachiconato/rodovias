@@ -318,14 +318,14 @@ function showPopUp(clickEvent, rows) {
   boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
 
   var html = [];
-  html.push('<span class="column" >');
+  html.push('<span class="column column-left" >');
   html.push('  <h2>' + popupData.name + '</h2>');
   html.push('  <img class="icon" src="images/caraccident.png" />');
   html.push('  <span class="number">' + popupData.accidents + '</span>');
   html.push('  <img class="icon" src="images/dead.png" />');
   html.push('  <span class="number">' + popupData.deaths + '</span><br>');
   html.push('</span>');
-  html.push('<span class="column" >');
+  html.push('<span class="column column-right" >');
   _.each(top5, function(t){
     html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause);
     html.push('  <span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
@@ -342,7 +342,6 @@ function showPopUp(clickEvent, rows) {
     pixelOffset : clickEvent.pixelOffset,
     zIndex: null,
     boxStyle: {
-      width: "400px",
       opacity: 0.85
     },
     closeBoxMargin: "10px 2px 2px 2px",
