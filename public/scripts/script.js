@@ -1,7 +1,10 @@
 "use strict";
 
 var map;
+// why not a hash?
 var states = [];
+
+google.maps.visualRefresh = true;
 
 function initializeGraph(data) {
   nv.addGraph(function() {
@@ -92,15 +95,29 @@ var mapUtil = {
     return '#' + rainbow.colourAt(value);
   },
   toggleStatesLayer: function(on) {
-    _.each(states, function(s){
-      s.polygon.setMap(on ? map : null);
-    });
+    var i = 0;
+    var size = states.length;
+
+    // FASTER ON IE?
+    for(var i = 0; i < size; i++){
+      setTimeout(function(state){
+        return function(){
+          state.polygon.setVisible(on);
+        }
+      }(states[i]), on ? i * 20 + 1 : i + 1)
+    }
+
+    //_.each(states, function(s){
+    //  setTimeout(function(){
+    //    s.polygon.setVisible(on);
+    //  }, on ? i * 50 + 1 : i + 1)
+    //});
 
     if(!on){
-      $('#map-canvas').css('height', '100%');
+      //$('#map-canvas').css('height', '100%');
       //$('#chart-overlay').hide();
       $('#info-popup').hide();
-      google.maps.event.trigger(map, 'resize');
+      //google.maps.event.trigger(map, 'resize');
     }
   },
   toggleRoadsLayer: function(on) {
@@ -281,7 +298,7 @@ function parseData(fusionTableResponse, range) {
         var val = _.find(causaEntries, function(c){
           return c[0] == year.toString() && c[1] == month.toString();
         });
-        
+
         var total = val ? parseInt(val[3]) : 0;
 
         rangeData.push({ 
@@ -292,7 +309,7 @@ function parseData(fusionTableResponse, range) {
     }
 
     return {
-      key: causa, 
+      key: causa,
       values: rangeData
     };
   });
