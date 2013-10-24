@@ -2,6 +2,10 @@ var map;
 var states = [];
 var ib = new InfoBox();
 
+google.maps.event.addListener(ib, 'closeclick', function() {
+  mapUtil.clearSelectedState();
+});
+
 function initializeGraph(data) {
   nv.addGraph(function() {
     var chart = nv.models.stackedAreaChart()
@@ -73,6 +77,12 @@ var mapUtil = {
   },
   isSelected: function(stateName) {
     return this.selectedState && this.selectedState.name === stateName;
+  },
+  clearSelectedState: function() {
+    var _self = this;
+    var state = _.find(states, function(s) { console.log(s); return s.name === _self.selectedState.name; });
+    state.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});
+    this.selectedState = null;
   },
   getRGB: function(value) {
     var rainbow = new Rainbow(); 
@@ -352,7 +362,7 @@ function showPopUp(clickEvent, rows) {
     enableEventPropagation: false
   };
 
-  ib.close();
+  //ib.close();
   ib.setOptions(myOptions);
   ib.open(map, marker);
 }
