@@ -2,22 +2,6 @@ var map;
 var states = [];
 var ib = new InfoBox();
 
-var slider = {
-  range: function() {
-    var dv = $('#slider').dateRangeSlider("values");
-    var min = {
-      year: dv.min.getFullYear(),
-      month: dv.min.getMonth()+1
-    };
-    var max = {
-      year: dv.max.getFullYear(),
-      month: dv.max.getMonth()+1
-    };
-
-    return {min: min, max: max};
-  }
-};
-
 function initializeGraph(data) {
   nv.addGraph(function() {
     var chart = nv.models.stackedAreaChart()
@@ -116,7 +100,7 @@ var mapUtil = {
 function dateRangeChanged(e, data) {
   var rsp = fusionTableWrapper.lastResponse;
   if(rsp) {
-    var data = parseData(rsp, slider.range());
+    var data = parseData(rsp, slider.getRange());
     initializeGraph(data);
   }
 }
@@ -124,7 +108,7 @@ function dateRangeChanged(e, data) {
 function initialize() {
   google.maps.visualRefresh = true;
 
-  createSpinner('map-spinner');
+  spinner.init('map-spinner');
   
   // slider change binding 
   $('#slider').on('valuesChanged', dateRangeChanged);
@@ -168,7 +152,6 @@ function initialize() {
   var fields = ['Text', 'Location', 'total'];
   fusionTableWrapper.call(tableId, fields, null, 'drawMap');
 }
-
 
 
 function drawMap(data) {
@@ -227,7 +210,7 @@ function drawMap(data) {
     state.setMap(map);
   }
 
-  stopSpinning('map-spinner');
+  spinner.stop('map-spinner');
 }
 
 function parseData(fusionTableResponse, range) {
@@ -276,11 +259,7 @@ function parseData(fusionTableResponse, range) {
 }
 
 function openGraphWindow(fusionTableResponse) {
-  $('#chart-overlay').show();
-  //$('#map-canvas').css('height', '60%');
-
   fusionTableWrapper.lastResponse = fusionTableResponse;
-
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
 
   window.google.maps.event.addListener(ib, "domready", function () {
@@ -288,11 +267,11 @@ function openGraphWindow(fusionTableResponse) {
       type:'inline',
       callbacks: {
         open: function(){
-          sliderManager.init();
+          slider.init();
           initializeGraph(parseData(fusionTableResponse, slider.range()));
         },
         close: function() {
-          sliderManager.destroy();
+          slider.destroy();
         }
       }
     });
@@ -307,35 +286,6 @@ function changeViews() {
 
   mapUtil.toggleRoadsLayer(showRoads);
   mapUtil.toggleStatesLayer(!showRoads);
-}
-
-function createSpinner(containerId) {
-  var opts = {
-      lines: 13, // The number of lines to draw
-      length: 8, // The length of each line
-      width: 4, // The line thickness
-      radius: 13, // The radius of the inner circle
-      corners: 1, // Corner roundness (0..1)
-      rotate: 0, // The rotation offset
-      direction: 1, // 1: clockwise, -1: counterclockwise
-      color: '#000', // #rgb or #rrggbb or array of colors
-      speed: 1, // Rounds per second
-      trail: 60, // Afterglow percentage
-      shadow: false, // Whether to render a shadow
-      hwaccel: false, // Whether to use hardware acceleration
-      className: 'spinner', // The CSS class to assign to the spinner
-      zIndex: 2e9, // The z-index (defaults to 2000000000)
-      top: 'auto', // Top position relative to parent in px
-      left: 'auto' // Left position relative to parent in px
-  };
-  var target = document.getElementById(containerId);
-  $('#' + containerId).show();
-  return new Spinner(opts).spin(target);
-}
-
-function stopSpinning(containerId) {
-  $(containerId).stop();
-  $('#' + containerId).hide();
 }
 
 function showPopUp(clickEvent, rows) {

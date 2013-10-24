@@ -1,5 +1,5 @@
 "use strict";
-var sliderManager = {
+var slider = {
   init: function() {
     $('#slider').dateRangeSlider({
       bounds: {
@@ -23,6 +23,18 @@ var sliderManager = {
   },
   destroy: function() {
     $('#slider').dateRangeSlider("destroy");
+  },
+  getRange: function() {
+    var dv = $('#slider').dateRangeSlider("values");
+    var min = {
+      year: dv.min.getFullYear(),
+      month: dv.min.getMonth()+1
+    };
+    var max = {
+      year: dv.max.getFullYear(),
+      month: dv.max.getMonth()+1
+    };
+
+    return {min: min, max: max};
   }
 };
-
