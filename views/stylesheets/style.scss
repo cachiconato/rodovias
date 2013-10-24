@@ -76,13 +76,6 @@ main, section {
   cursor: pointer;
 }
 
-#chart-overlay  {
-  //fixit
-  height: 500px; 
-  width: 80%;
- // background-color: rgba(255, 255, 255, 0.7);
-}
-
 #map-spinner {
   position: absolute;
   top: 0;
@@ -209,11 +202,15 @@ svg text, .gm-style span {
     display: block;
   }
 }
-#slider-container {
-  position: absolute;
-  top: 45px;
-  right: 30px;
-  width: 200px;
+
+.graph-container {
+  height: 400px;
+}
+
+.slider-container {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 footer {

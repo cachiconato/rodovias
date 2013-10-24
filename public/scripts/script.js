@@ -288,7 +288,11 @@ function openGraphWindow(fusionTableResponse) {
       type:'inline',
       callbacks: {
         open: function(){
+          sliderManager.init();
           initializeGraph(parseData(fusionTableResponse, slider.range()));
+        },
+        close: function() {
+          sliderManager.destroy();
         }
       }
     });
