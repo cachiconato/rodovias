@@ -95,7 +95,7 @@ svg text, .gm-style span {
   display: block;
   position: absolute;
   height: 10px;
-  top: 140px;
+  top: 34px;
   right: 32px;
   z-index: 99;
 
@@ -104,6 +104,7 @@ svg text, .gm-style span {
     font-family: "OpenSansBold";
     display: block;
     color: #777;
+    margin-bottom: 3px;
   }
 
   .numbers {
@@ -128,8 +129,8 @@ svg text, .gm-style span {
       background: #238443;
     }
 
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     display: inline-block;
     margin-left: 15px;
   }
