@@ -311,52 +311,54 @@ function stopSpinning(containerId) {
 }
 
 function showPopUp(clickEvent) {
-   var marker = new google.maps.Marker({
-     map: map,
-     draggable: true,
-     position: clickEvent.latLng,
-     visible: false
-    });
-                
-    var boxText = document.createElement("div");
-    boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
-    boxText.innerHTML =
-      '<span class="column" >' +
-      '  <h2>RS</h2>' +
-      '  <img class="icon" src="images/caraccident.png" />' +
-      '  <span class="number">200</span>' +
-      '  <img class="icon" src="images/dead.png" />' +
-      '  <span class="number">200</span><br>' +
-      '</span>' +
-      '<span class="column" >' +
-      '  <span class="causa"><span class="percentage">30%</span> Bebida</span>' +
-      '  <span class="causa"><span class="percentage">20%</span> Velocidade</span>' +
-      '  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>' +
-      '  <span class="causa"><span class="percentage">5%</span> Stuff</span>' +
-      '</span>' +
-      '<a href="">Veja mais informações</a>';
-            
-    var myOptions = {
-      content: boxText,
-      disableAutoPan: false,
-      maxWidth: 0,
-      pixelOffset : clickEvent.pixelOffset,
-      zIndex: null,
-      boxStyle: {
-        width: "300px",
-        opacity: 0.85
-      },
-      closeBoxMargin: "10px 2px 2px 2px",
-      closeBoxURL: "images/close.png",
-      infoBoxClearance: new google.maps.Size(1, 1),
-      isHidden: false,
-      pane: "floatPane",
-      enableEventPropagation: false
-    };
+  var marker = new google.maps.Marker({
+    map: map,
+    draggable: true,
+    position: clickEvent.latLng,
+    visible: false
+  });
 
-    ib.close();
-    ib.setOptions(myOptions);
-    ib.open(map, marker);
+  var stateName = mapUtil.selectedState.name;
+
+  var boxText = document.createElement("div");
+  boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
+  boxText.innerHTML =
+    '<span class="column" >' +
+    '  <h2>' + stateName + '</h2>' +
+    '  <img class="icon" src="images/caraccident.png" />' +
+    '  <span class="number">200</span>' +
+    '  <img class="icon" src="images/dead.png" />' +
+    '  <span class="number">200</span><br>' +
+    '</span>' +
+    '<span class="column" >' +
+    '  <span class="causa"><span class="percentage">30%</span> Bebida</span>' +
+    '  <span class="causa"><span class="percentage">20%</span> Velocidade</span>' +
+    '  <span class="causa"><span class="percentage">10%</span> Animal na Pista</span>' +
+    '  <span class="causa"><span class="percentage">5%</span> Stuff</span>' +
+    '</span>' +
+    '<a href="">Veja mais informações</a>';
+          
+  var myOptions = {
+    content: boxText,
+    disableAutoPan: false,
+    maxWidth: 0,
+    pixelOffset : clickEvent.pixelOffset,
+    zIndex: null,
+    boxStyle: {
+      width: "300px",
+      opacity: 0.85
+    },
+    closeBoxMargin: "10px 2px 2px 2px",
+    closeBoxURL: "images/close.png",
+    infoBoxClearance: new google.maps.Size(1, 1),
+    isHidden: false,
+    pane: "floatPane",
+    enableEventPropagation: false
+  };
+
+  ib.close();
+  ib.setOptions(myOptions);
+  ib.open(map, marker);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
