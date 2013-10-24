@@ -111,7 +111,10 @@ svg text, .gm-style span {
   }
 
   h2 {
+    font-family: "OpenSansLight";
+    border-bottom: 1px solid #247DB9;
     margin: 0;
+    margin-bottom: 10px;
   }
 
   span.causa {
@@ -121,19 +124,20 @@ svg text, .gm-style span {
 
   span.number {
     margin-left: 4px;
-    font-size: 30px;
+    font-size: 37px;
     vertical-align: top;
+    color: #FFBF00;
   }
 
   img {
-    width: 20px;
+    width: 16px;
     padding: 3px;
   }
 
   .icon {
-    top: 2px;
+    top: 10px;
     position: relative;
-    width: 40px;
+    width: 32px;
     padding: 0;
   }
 }

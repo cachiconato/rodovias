@@ -297,6 +297,7 @@ function showPopUp(clickEvent) {
     boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; background: #3498db; color:white; padding: 5px;";
     boxText.innerHTML =
       '<span class="column" >' +
+      '  <h2>RS</h2>' +
       '  <img class="icon" src="images/caraccident.png" />' +
       '  <span class="number">200</span>' +
       '  <img class="icon" src="images/dead.png" />' +
