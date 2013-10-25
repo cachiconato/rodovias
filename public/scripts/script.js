@@ -1,12 +1,10 @@
 "use strict";
 
 var map;
+// why not a hash?
 var states = [];
-var ib = new InfoBox();
 
-google.maps.event.addListener(ib, 'closeclick', function() {
-  mapUtil.clearSelectedState();
-});
+google.maps.visualRefresh = true;
 
 function initializeGraph(data) {
   nv.addGraph(function() {
@@ -97,15 +95,29 @@ var mapUtil = {
     return '#' + rainbow.colourAt(value);
   },
   toggleStatesLayer: function(on) {
-    _.each(states, function(s){
-      s.polygon.setMap(on ? map : null);
-    });
+    var i = 0;
+    var size = states.length;
+
+    // FASTER ON IE?
+    for(var i = 0; i < size; i++){
+      setTimeout(function(state){
+        return function(){
+          state.polygon.setVisible(on);
+        }
+      }(states[i]), on ? i * 20 + 1 : i + 1)
+    }
+
+    //_.each(states, function(s){
+    //  setTimeout(function(){
+    //    s.polygon.setVisible(on);
+    //  }, on ? i * 50 + 1 : i + 1)
+    //});
 
     if(!on){
-      $('#map-canvas').css('height', '100%');
+      //$('#map-canvas').css('height', '100%');
       //$('#chart-overlay').hide();
-      ib.close();
-      google.maps.event.trigger(map, 'resize');
+      $('#info-popup').hide();
+      //google.maps.event.trigger(map, 'resize');
     }
   },
   toggleRoadsLayer: function(on) {
@@ -135,13 +147,16 @@ function initialize() {
     minZoom: 4,
     maxZoom: 10,
     mapTypeControl: false,
-    panControl: false,
-    zoomControl: true,
-    zoomControlOptions: {
-        style:google.maps.ZoomControlStyle.DEFAULT,
+    panControl: true,
+    panControlOptions: {
         position: google.maps.ControlPosition.LEFT_CENTER
     },
-    scaleControl: true,
+    zoomControl: true,
+    zoomControlOptions: {
+        style:google.maps.ZoomControlStyle.SMALL,
+        position: google.maps.ControlPosition.LEFT_CENTER
+    },
+    scaleControl: false,
     streetViewControl: false,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
@@ -248,7 +263,6 @@ function drawMap(data) {
       this.setOptions({strokeWeight: 2.5, strokeColor: '#000000'});
 
       mapUtil.selectState({name: this.name, clickEvent: e});
-      ib.close(); // fix IE bug ;)
       fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
     });
 
@@ -284,7 +298,7 @@ function parseData(fusionTableResponse, range) {
         var val = _.find(causaEntries, function(c){
           return c[0] == year.toString() && c[1] == month.toString();
         });
-        
+
         var total = val ? parseInt(val[3]) : 0;
 
         rangeData.push({ 
@@ -295,7 +309,7 @@ function parseData(fusionTableResponse, range) {
     }
 
     return {
-      key: causa, 
+      key: causa,
       values: rangeData
     };
   });
@@ -306,21 +320,18 @@ function parseData(fusionTableResponse, range) {
 function openGraphWindow(fusionTableResponse) {
   fusionTableWrapper.lastResponse = fusionTableResponse;
   showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
-
-  window.google.maps.event.addListenerOnce(ib, "domready", function () {
-    $('#grafico').magnificPopup({
-      type:'inline',
-      callbacks: {
-        open: function(){
-          slider.init();
-          initializeGraph(parseData(fusionTableResponse, slider.getRange()));
-        },
-        close: function() {
-          //destroyGraph??????
-          slider.destroy();
-        }
+  
+  $('#grafico').magnificPopup({
+    type:'inline',
+    callbacks: {
+      open: function(){
+        slider.init();
+        initializeGraph(parseData(fusionTableResponse, slider.getRange()));
+      },
+      close: function() {
+        slider.destroy();
       }
-    });
+    }
   });
 };
 
@@ -336,13 +347,6 @@ function changeViews() {
 }
 
 function showPopUp(clickEvent, rows) {
-  var marker = new google.maps.Marker({
-    map: map,
-    draggable: true,
-    position: clickEvent.latLng,
-    visible: false
-  });
-
   var total = _.reduce(rows, function(t, row){ return t + row[3]; }, 0);
 
   var causes = _.uniq(_.map(rows, function(r){ return r[2] || 'desconhecido'; }));
@@ -361,48 +365,19 @@ function showPopUp(clickEvent, rows) {
     deaths: 666 //TODO unknown
   };
 
-  var boxText = document.createElement("div");
-  boxText.style.cssText = "border: 1px solid #2980b9; border-radius: 3px; margin-top: 8px; margin-bottom: 60px; background: #3498db; color:white; padding: 5px;";
-
   var html = [];
-  html.push('<span class="column column-left" >');
   html.push('  <h2>' + popupData.name + '</h2>');
-  html.push('  <img class="icon" src="images/caraccident.png" />');
-  html.push('  <span class="number">' + popupData.accidents + '</span>');
-  html.push('  <img class="icon" src="images/dead.png" />');
-  html.push('  <span class="number">' + popupData.deaths + '</span><br>');
-  html.push('</span>');
-  html.push('<span class="column column-right" >');
+  html.push('  <span class="column"><img class="icon" src="images/caraccident.png" /><span class="number">' + popupData.accidents + '</span></span>');
+  html.push('  <span class="column"><img class="icon" src="images/dead.png" /><span class="number">' + popupData.deaths + '</span><br></span>');
   _.each(top5, function(t){
     html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause);
     html.push('  <span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
-    html.push('  </span>');
   });
   html.push('</span>');
   html.push('<a href="#chart-overlay" id="grafico">Veja mais informações</a>');
 
-  boxText.innerHTML = html.join('');
-
-  var myOptions = {
-    content: boxText,
-    disableAutoPan: false,
-    maxWidth: 0,
-    pixelOffset : clickEvent.pixelOffset,
-    zIndex: null,
-    boxStyle: {
-      opacity: 0.92
-    },
-    closeBoxMargin: "10px 2px 2px 2px",
-    closeBoxURL: "images/close.png",
-    infoBoxClearance: new google.maps.Size(1, 1),
-    isHidden: false,
-    pane: "floatPane",
-    enableEventPropagation: false
-  };
-
-  //ib.close();
-  ib.setOptions(myOptions);
-  ib.open(map, marker);
+  $('#info-popup').html(html);
+  $('#info-popup').css("display", "block");
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
