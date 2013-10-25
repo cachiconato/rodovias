@@ -67,16 +67,16 @@ var result = db.ocorrencia.aggregate([
       _id: 0,
       ocodataocorrencia: 1,
       'local.lbruf': 1,
-      'locallbrbr': 1,
-      causaAcidente: 1,
+      'local.lbrbr': 1,
+      causaAciente: 1,
       morto: {$cond: [{$eq: ["$pessoas.dados.pesestadofisico", "Morto"]}, 1, 0]},
   }},
   { $group: {
-      _id: { ano: {$year: "$ocodataocorrencia"}, mes: {$month: "$ocodataocorrencia"}, local: "$local.lbruf", br: "$local.lbrbr", causa: "$causaAcidente"},
+      _id: { ano: {$year: "$ocodataocorrencia"}, mes: {$month: "$ocodataocorrencia"}, local: "$local.lbruf", br: "$local.lbrbr", causa: "$causaAciente.causaAcidente"},
       acidentes : {$sum : 1},
       mortes: {$sum: "$morto"}
 }}]);
 
 db.resultado.insert(result.result);
 
-mongoexport --db test --collection resultado --csv --fields _id.ano,_id.mes,_id.local,acidentes,mortes --out /Users/cchicon/github/rodovias-heroku/trechos.csv
+mongoexport --db test --collection resultado --csv --fields _id.ano,_id.mes,_id.local,_id.br,_id.causa,acidentes,mortes --out /Users/cchicon/github/rodovias-heroku/trechos.csv
