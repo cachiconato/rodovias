@@ -254,8 +254,8 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'click', function(e) {
-      var tableId = '12mTiRPefS4Qou_rDhCqXB_PVyFIFsI5VwJGsmNc';
-      var fields = ['ano', 'mes', 'causaAcidente', 'numeroacidentes', 'mortes'];
+      var tableId = '167X7_djZo9A9XBPyIfkuIVyEc2thTRyK4U1nes8';
+      var fields = ['ano', 'mes', 'causaAcidente', 'acidentes', 'mortes'];
       var where = "local = '" + this.name + "'";
 
       // highlight clicked state
