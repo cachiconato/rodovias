@@ -94,9 +94,9 @@ svg text, .gm-style span {
   display: none;
   position: absolute;
   border-radius: 3px;
-  height: 355px;
+  height: 375px;
   width: 265px;
-  top: 95px;
+  top: 85px;
   right: 15px;
   z-index: 99;
   background: #3498db;
@@ -155,8 +155,7 @@ svg text, .gm-style span {
   height: 10px;
   background: #76B6E0;
   width: 100%;
-  margin-bottom: 5px;
-  margin-top: 5px;
+  margin-bottom: 10px;
 }
 
 .progress-color {
@@ -174,10 +173,12 @@ svg text, .gm-style span {
     height: 75px;
     vertical-align: top;
     display: inline-block;
+    margin-bottom: 10px;
   }
 
   a, a:visited {
-    color: white;
+    font-family: "OpenSansBold";
+    color: #FAE12C;
     font-size: 15px;
     margin-top: 10px;
     display: block;
@@ -221,6 +222,10 @@ svg text, .gm-style span {
     width: 32px;
     padding: 0;
     display: inline-block;
+  }
+
+  .icon-car {
+    width: 52px;
   }
 }
 

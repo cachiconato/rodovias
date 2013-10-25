@@ -388,13 +388,13 @@ function showPopUp(rows) {
 
   var html = [];
   html.push('  <h2>' + popupData.name + '</h2>');
-  html.push('  <span data-hint="Número de acidentes" class="hint--left column"><img class="icon" src="images/caraccident.png" /><span class="number">' + popupData.accidents + '</span></span>');
+  html.push('  <span data-hint="Número de acidentes" class="hint--left column"><img class="icon icon-car" src="images/caraccident.png" /><span class="number">' + popupData.accidents + '</span></span>');
   html.push('  <span data-hint="Número de mortes"  class="hint--left column"><img class="icon" src="images/dead.png" /><span class="number">' + popupData.deaths + '</span><br></span>');
   _.each(top5, function(t){
     html.push('<span data-hint="' + 'Número de acidentes: ' + t.accidents + ' Número de mortes: ' + t.deaths + '" class="hint--left causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause + '<span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
   });
   html.push('</span>');
-  html.push('<a href="#chart-overlay" id="grafico">Veja mais informações</a>');
+  html.push('<a href="#chart-overlay" id="grafico">+ Veja mais informações</a>');
 
   $('#info-popup').html(html);
   $('#info-popup').css("display", "block");
