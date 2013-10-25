@@ -143,7 +143,7 @@ function initialize() {
 
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: new google.maps.LatLng(-14.989911309819053, -48.35657244067755),
-    zoom: 5,
+    zoom: 4,
     minZoom: 4,
     maxZoom: 10,
     mapTypeControl: false,
@@ -355,7 +355,8 @@ function showPopUp(clickEvent, rows) {
     var causeData = _.filter(rows, function(r){ return r[2] == cause; });
     var causeTotal = _.reduce(causeData, function(t, v){ return t + v[3]; }, 0);
     var percentage = ((causeTotal/total) * 100).toFixed(2);
-    return {cause: cause, percentage: percentage, accidents: causeTotal};
+    var mortesPorCausa = _.reduce(causeData, function(t, v){ return t + v[4]; }, 0);
+    return {cause: cause, percentage: percentage, accidents: causeTotal, deaths: mortesPorCausa};
   });
 
   var top5  = _.sortBy(causesTotals, function(c){ return -c.percentage; }).slice(0, 5);
@@ -371,7 +372,7 @@ function showPopUp(clickEvent, rows) {
   html.push('  <span data-hint="Número de acidentes" class="hint--left column"><img class="icon" src="images/caraccident.png" /><span class="number">' + popupData.accidents + '</span></span>');
   html.push('  <span data-hint="Número de mortes"  class="hint--left column"><img class="icon" src="images/dead.png" /><span class="number">' + popupData.deaths + '</span><br></span>');
   _.each(top5, function(t){
-    html.push('<span data-hint="' + 'Número de acidentes: ' + t.accidents + ' Número de mortes: ' + 'XXX' + '" class="hint--left causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause + '<span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
+    html.push('<span data-hint="' + 'Número de acidentes: ' + t.accidents + ' Número de mortes: ' + t.deaths + '" class="hint--left causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause + '<span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
   });
   html.push('</span>');
   html.push('<a href="#chart-overlay" id="grafico">Veja mais informações</a>');
