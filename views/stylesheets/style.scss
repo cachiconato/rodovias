@@ -169,12 +169,16 @@ svg text, .gm-style span {
   padding: 15px;
 
   .column {
-    width: 49%;
+    width: 40%;
     height: 75px;
     vertical-align: top;
     display: inline-block;
     margin-bottom: 10px;
   }
+
+  .mortes {
+    margin-left: 13%;  
+  } 
 
   a, a:visited {
     font-family: "OpenSansBold";
