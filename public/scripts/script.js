@@ -29,7 +29,7 @@ function initializeGraph(data) {
     .attr("x", 20)
     .attr("y", 20)
     .attr("text-anchor", "middle")  
-    .text(mapUtil.selectedState.name);
+    .text(mapUtil.getSelectedName());
 
     d3.select('#chart-overlay svg')
         .datum(data)
@@ -88,6 +88,13 @@ var mapUtil = {
     state.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});
     this.selectedState = null;
   },
+  getSelectedName: function() {
+    if(mapUtil.selectedState)
+      return mapUtil.selectedState.name;
+    else if(mapUtil.selectedRoad)
+      return mapUtil.selectedRoad;
+    else return '-';
+  },
   getRGB: function(value) {
     var rainbow = new Rainbow(); 
     rainbow.setNumberRange(1246, 163111);  //rainbow.setSpectrum('#FFFFB2', '#FECC5C', '#FD8D3C', '#E31A1C'); //yellow
@@ -114,14 +121,14 @@ var mapUtil = {
     //});
 
     if(!on){
-      //$('#map-canvas').css('height', '100%');
-      //$('#chart-overlay').hide();
       $('#info-popup').hide();
-      //google.maps.event.trigger(map, 'resize');
     }
   },
   toggleRoadsLayer: function(on) {
     this.roadsLayer.setMap(on ? map : null);
+    if(!on){
+      $('#info-popup').hide();
+    }
   }
 };
 
@@ -163,7 +170,7 @@ function initialize() {
 
   mapUtil.roadsLayer = new google.maps.FusionTablesLayer({
     query: {
-      select: "geom",
+      select: "road",
       from: "1KOwur7icdQlzaXN3yJ7QB9zMyxxMhSIkGIjuEEM",
     },
     options: {
@@ -171,6 +178,20 @@ function initialize() {
       templateId: 2
     },
     heatmap: {enabled: false}
+  });
+
+  google.maps.event.addListener(mapUtil.roadsLayer, 'click', function(e) {
+    var trecho = e.row.trecho_uf.value;
+    var br = trecho.split('-')[1];
+    var uf = trecho.split('-')[2];
+
+    mapUtil.selectedRoad = uf + '-' + br;
+
+    //call fusiontable 
+    var tableId = '1RvJQVumdV7DZ6yZVLFlSvdt31rxJivBJgebcg3E';
+    var fields = ['ano', 'mes', 'causaAcidente', 'acidentes', 'mortes'];
+    var where = "estado = '" + uf + "' AND br = '"+ br +"'";
+    fusionTableWrapper.call(tableId, fields, where, 'openGraphWindow');
   });
 
   var tableId = '189pHpNhpAHtZcI-cFMmT1foqdJrWSdLMIX70hXM';
@@ -319,7 +340,7 @@ function parseData(fusionTableResponse, range) {
 
 function openGraphWindow(fusionTableResponse) {
   fusionTableWrapper.lastResponse = fusionTableResponse;
-  showPopUp(mapUtil.selectedState.clickEvent, fusionTableResponse.rows);
+  showPopUp(fusionTableResponse.rows);
   
   $('#grafico').magnificPopup({
     type:'inline',
@@ -346,7 +367,7 @@ function changeViews() {
   mapUtil.toggleStatesLayer(!showRoads);
 }
 
-function showPopUp(clickEvent, rows) {
+function showPopUp(rows) {
   var total = _.reduce(rows, function(t, row){ return t + row[3]; }, 0);
   var deaths = _.reduce(rows, function(t, row){ return t + row[4]; }, 0);
 
@@ -360,9 +381,8 @@ function showPopUp(clickEvent, rows) {
   });
 
   var top5  = _.sortBy(causesTotals, function(c){ return -c.percentage; }).slice(0, 5);
-
   var popupData = {
-    name: mapUtil.selectedState.name,
+    name: mapUtil.getSelectedName(),
     accidents: total,
     deaths: deaths
   };
