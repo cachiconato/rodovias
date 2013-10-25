@@ -80,13 +80,16 @@ var mapUtil = {
   isSelected: function(stateName) {
     return this.selectedState && this.selectedState.name === stateName;
   },
-  clearSelectedState: function() {
-    if(!this.selectedState) return; //none currently selected
-
-    var _self = this;
-    var state = _.find(states, function(s) { return s.name === _self.selectedState.name; });
-    state.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});
-    this.selectedState = null;
+  clearSelected: function() {
+    if(this.selectedState) {
+      var _self = this;
+      var state = _.find(states, function(s) { return s.name === _self.selectedState.name; });
+      state.polygon.setOptions({strokeWeight: 1, strokeColor: '#555555'});
+      this.selectedState = null;
+    }
+    if(this.selectedRoad) {
+      this.selectedRoad = null;
+    }
   },
   getSelectedName: function() {
     if(mapUtil.selectedState)
@@ -120,15 +123,9 @@ var mapUtil = {
     //  }, on ? i * 50 + 1 : i + 1)
     //});
 
-    if(!on){
-      $('#info-popup').hide();
-    }
   },
   toggleRoadsLayer: function(on) {
     this.roadsLayer.setMap(on ? map : null);
-    if(!on){
-      $('#info-popup').hide();
-    }
   }
 };
 
@@ -186,7 +183,7 @@ function initialize() {
     var br = trecho.split('-')[1];
     var uf = trecho.split('-')[2];
 
-    mapUtil.selectedRoad = uf + '-' + br;
+    mapUtil.selectedRoad = 'BR-' + br + ' ' + uf;
 
     //call fusiontable 
     var tableId = '1RvJQVumdV7DZ6yZVLFlSvdt31rxJivBJgebcg3E';
@@ -363,7 +360,8 @@ function changeViews() {
   if(showRoads == newVal) return;
   else { showRoads = newVal };
 
-  mapUtil.clearSelectedState();
+  $('#info-popup').hide();
+  mapUtil.clearSelected();
   mapUtil.toggleRoadsLayer(showRoads);
   mapUtil.toggleStatesLayer(!showRoads);
 }
