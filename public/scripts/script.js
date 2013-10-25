@@ -368,8 +368,8 @@ function showPopUp(clickEvent, rows) {
 
   var html = [];
   html.push('  <h2>' + popupData.name + '</h2>');
-  html.push('  <span class="column"><img class="icon" src="images/caraccident.png" /><span class="number">' + popupData.accidents + '</span></span>');
-  html.push('  <span class="column"><img class="icon" src="images/dead.png" /><span class="number">' + popupData.deaths + '</span><br></span>');
+  html.push('  <span data-hint="Número de acidentes" class="hint--left column"><img class="icon" src="images/caraccident.png" /><span class="number">' + popupData.accidents + '</span></span>');
+  html.push('  <span  data-hint="Número de mortes"  class="hint--left column"><img class="icon" src="images/dead.png" /><span class="number">' + popupData.deaths + '</span><br></span>');
   _.each(top5, function(t){
     html.push('  <span class="causa"><span class="percentage">' + t.percentage + '%</span> ' + t.cause);
     html.push('  <span class="progress-bar"><span class="progress-color" style="width: ' + t.percentage + '%"' + '></span></span>');
