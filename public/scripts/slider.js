@@ -4,11 +4,11 @@ var slider = {
     $('#slider').dateRangeSlider({
       bounds: {
         min: new Date(2007, 0, 1),
-        max: new Date(2013, 5, 30)
+        max: new Date(2013, 6, 1)
       },
       defaultValues: {
         min: new Date(2007, 0, 1),
-        max: new Date(2013, 5, 30)
+        max: new Date(2013, 6, 1)
       },
       formatter: function(val) {
         var month = val.getMonth() + 1;
