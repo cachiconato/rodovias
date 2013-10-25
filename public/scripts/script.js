@@ -26,7 +26,7 @@ function initializeGraph(data) {
   $('#chart-overlay svg').empty();
   d3.select('#chart-overlay svg')
     .append("text")
-    .attr("x", 20)
+    .attr("x", 40)
     .attr("y", 20)
     .attr("text-anchor", "middle")  
     .text(mapUtil.getSelectedName());
