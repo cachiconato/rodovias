@@ -205,7 +205,7 @@ function initialize() {
     'SE',
     'SP',
     'TO'
-  ]
+  ];
 
   for (var i = 0; i < estados.length; i++) {
     fusionTableWrapper.call(tableId, fields, "Text = '" + estados[i] + "'", 'drawMap');
@@ -254,8 +254,8 @@ function drawMap(data) {
     });
 
     google.maps.event.addListener(state, 'click', function(e) {
-      var tableId = '1za9lKRkUO7WKwUhdwcLpAa8CDZLqKgvtHM7YCk0';
-      var fields = ['ano', 'mes', 'causaAcidente', 'acidentes'];
+      var tableId = '12mTiRPefS4Qou_rDhCqXB_PVyFIFsI5VwJGsmNc';
+      var fields = ['ano', 'mes', 'causaAcidente', 'numeroacidentes', 'mortes'];
       var where = "local = '" + this.name + "'";
 
       // highlight clicked state
@@ -348,6 +348,7 @@ function changeViews() {
 
 function showPopUp(clickEvent, rows) {
   var total = _.reduce(rows, function(t, row){ return t + row[3]; }, 0);
+  var deaths = _.reduce(rows, function(t, row){ return t + row[4]; }, 0);
 
   var causes = _.uniq(_.map(rows, function(r){ return r[2] || 'desconhecido'; }));
   var causesTotals = _.map(causes, function(cause) {
@@ -362,7 +363,7 @@ function showPopUp(clickEvent, rows) {
   var popupData = {
     name: mapUtil.selectedState.name,
     accidents: total,
-    deaths: 666 //TODO unknown
+    deaths: deaths
   };
 
   var html = [];
