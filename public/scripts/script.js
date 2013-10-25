@@ -177,7 +177,8 @@ function initialize() {
       styleId: 2,
       templateId: 2
     },
-    heatmap: {enabled: false}
+    heatmap: {enabled: false},
+    suppressInfoWindows: true
   });
 
   google.maps.event.addListener(mapUtil.roadsLayer, 'click', function(e) {
