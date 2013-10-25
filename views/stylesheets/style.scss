@@ -103,25 +103,31 @@ svg text, .gm-style span {
 }
 
 #map-legend {
-  text-align: right;
+  text-align: left;
   display: block;
   position: absolute;
-  height: 10px;
-  bottom: 134px;
-  right: 32px;
+  bottom: 72px;
+  right: 17px;
   z-index: 99;
+  height: 59px;
+  background: #3498db;
+  color: white;
+  border-radius: 2px;
+  padding: 7px;
 
   h3 {
     font-size: 12px;
     font-family: "OpenSansBold";
     display: block;
-    color: #777;
+    color: white;
+    font-style: normal;
     margin-bottom: 3px;
+    margin-top: 0px;
   }
 
   .numbers {
     display: block;
-    color: #555;
+    color: white;
     font-size: 12px;
   }
 
@@ -146,7 +152,8 @@ svg text, .gm-style span {
     width: 15px;
     height: 15px;
     display: inline-block;
-    margin-left: 25px;
+    margin-right: 12px;
+    margin-left: 10px;
   }
 }
 
